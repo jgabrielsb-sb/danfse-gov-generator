@@ -86,12 +86,61 @@ def estimate_block_height_cm(
     return nominal_height_cm
 
 
-def party_message_height_cm() -> float:
-    return 0.32
+PARTY_TITLE_ROW_CM = 0.63
+PARTY_MESSAGE_ROW_CM = 0.32
+
+
+def is_party_message_field(key: str) -> bool:
+    return key.endswith(".mensagem_nao_identificado") or key.endswith(".mensagem_igual_tomador")
+
+
+def party_message_field_y_top_cm(*, block_y_top_cm: float, field_spec: FieldSpec, y_shift: float) -> float:
+    if is_party_message_field(field_spec.key):
+        return block_y_top_cm + y_shift + PARTY_TITLE_ROW_CM
+    return field_spec.y_top_cm + y_shift
+
+
+def party_message_field_height_cm(field_spec: FieldSpec, value: str) -> float:
+    return _party_message_row_height_cm(field_spec, value)
 
 
 def party_nominal_height_cm() -> float:
     return 1.94
+
+
+def _party_message_row_height_cm(field_spec: FieldSpec, value: str) -> float:
+    if not value.strip() or value.strip() == "-":
+        return PARTY_MESSAGE_ROW_CM
+
+    cpl = chars_per_line(field_spec.width_cm)
+    lines = wrap_lines(value, cpl)
+    needed = len(lines) * LINE_HEIGHT_CM + CELL_PADDING_CM
+    return max(PARTY_MESSAGE_ROW_CM, needed)
+
+
+def party_message_block_height_cm(
+    block_key: str,
+    field_visible: dict[str, bool],
+    field_values: dict[str, str],
+) -> float:
+    """Altura real do bloco em modo mensagem: título (0,63 cm) + linha(s) de mensagem."""
+    height_cm = 0.0
+    has_title = False
+
+    for field_spec in FIELD_SPECS:
+        if field_spec.block != block_key or not field_visible.get(field_spec.key, False):
+            continue
+        if field_spec.kind == "block_title":
+            has_title = True
+        elif field_spec.key.endswith(".mensagem_nao_identificado") or field_spec.key.endswith(
+            ".mensagem_igual_tomador",
+        ):
+            height_cm += _party_message_row_height_cm(field_spec, field_values.get(field_spec.key, ""))
+
+    if has_title:
+        height_cm += PARTY_TITLE_ROW_CM
+
+    return max(PARTY_TITLE_ROW_CM + PARTY_MESSAGE_ROW_CM, height_cm)
 
 
 def compute_block_y_shifts(
@@ -124,7 +173,12 @@ def compute_block_y_shifts(
         block_fields = fields_by_block.get(block_key, [])
 
         if block_key in party_message_blocks:
-            saved = party_nominal_height_cm() - party_message_height_cm()
+            actual_height = party_message_block_height_cm(
+                block_key,
+                field_visible,
+                field_values,
+            )
+            saved = party_nominal_height_cm() - actual_height
             cumulative_shift -= saved
             continue
 

@@ -6,7 +6,10 @@ from danfse.layout.models import DanfseLayoutPlan, LayoutBlock, LayoutElement, P
 from danfse.layout.reflow import (
     compute_block_y_shifts,
     field_height_cm,
-    party_message_height_cm,
+    is_party_message_field,
+    party_message_block_height_cm,
+    party_message_field_height_cm,
+    party_message_field_y_top_cm,
 )
 from danfse.layout.specs import BLOCK_SPECS, FIELD_SPECS, PAGE_SPEC
 from danfse.layout.visibility import is_block_visible, is_field_visible, party_has_message
@@ -58,7 +61,11 @@ def build_layout_plan(formatted: FormattedDanfse) -> DanfseLayoutPlan:
 
         if block_key := block_spec.key:
             if block_key in party_message_blocks:
-                block_height_cm = party_message_height_cm()
+                block_height_cm = party_message_block_height_cm(
+                    block_key,
+                    field_visible,
+                    field_values,
+                )
             elif block_spec.dynamic_height:
                 block_height_cm = _dynamic_block_height(
                     block_spec.key,
@@ -89,7 +96,16 @@ def build_layout_plan(formatted: FormattedDanfse) -> DanfseLayoutPlan:
                     continue
 
                 value = field_values[field_spec.key]
-                height_cm = field_height_cm(field_spec, value)
+                if block_spec.key in party_message_blocks and is_party_message_field(field_spec.key):
+                    field_y_top_cm = party_message_field_y_top_cm(
+                        block_y_top_cm=block_spec.y_top_cm,
+                        field_spec=field_spec,
+                        y_shift=y_shift,
+                    )
+                    height_cm = party_message_field_height_cm(field_spec, value)
+                else:
+                    field_y_top_cm = field_spec.y_top_cm + y_shift
+                    height_cm = field_height_cm(field_spec, value)
 
                 elements.append(
                     LayoutElement(
@@ -98,7 +114,7 @@ def build_layout_plan(formatted: FormattedDanfse) -> DanfseLayoutPlan:
                         kind=field_spec.kind,
                         rect=_rect_from_cm(
                             x_cm=field_spec.x_cm,
-                            y_top_cm=field_spec.y_top_cm + y_shift,
+                            y_top_cm=field_y_top_cm,
                             width_cm=field_spec.width_cm,
                             height_cm=height_cm,
                             page_height_cm=page.height_cm,

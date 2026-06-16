@@ -105,3 +105,41 @@ def test_servico_does_not_overlap_tributacao_municipal() -> None:
     for servico_element in servico.elements:
         for trib_element in tributacao.elements:
             assert not _rects_overlap_vertically(servico_element.rect, trib_element.rect)
+
+
+def test_party_message_blocks_do_not_overlap_neighbors() -> None:
+    xml_path = Path("31062002255548926000108000000000000826069247812850.xml")
+    if not xml_path.exists():
+        pytest.skip("fixture XML not available")
+
+    formatted = DanfseFormatter().format(map_to_domain(parse_xml(xml_path)))
+    plan = build_layout_plan(formatted)
+
+    ordered = ("destinatario", "intermediario", "servico")
+    blocks = [next(block for block in plan.blocks if block.key == key) for key in ordered]
+
+    for left, right in zip(blocks, blocks[1:]):
+        right_top = right.rect.y_pt + right.rect.height_pt
+        assert left.rect.y_pt >= right_top - 0.5
+
+        for left_element in left.elements:
+            for right_element in right.elements:
+                assert not _rects_overlap_vertically(left_element.rect, right_element.rect)
+
+
+def test_party_message_is_rendered_below_block_title() -> None:
+    xml_path = Path("31062002255548926000108000000000000826069247812850.xml")
+    if not xml_path.exists():
+        pytest.skip("fixture XML not available")
+
+    formatted = DanfseFormatter().format(map_to_domain(parse_xml(xml_path)))
+    plan = build_layout_plan(formatted)
+
+    for block_key in ("destinatario", "intermediario"):
+        block = next(item for item in plan.blocks if item.key == block_key)
+        title = next(element for element in block.elements if element.kind == "block_title")
+        message = next(element for element in block.elements if "mensagem" in element.key)
+
+        message_top = message.rect.y_pt + message.rect.height_pt
+        assert title.rect.y_pt >= message_top - 0.5
+        assert message.value.endswith("na NFS-e")
