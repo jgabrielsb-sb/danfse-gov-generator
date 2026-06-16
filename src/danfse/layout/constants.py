@@ -1,13 +1,15 @@
 from __future__ import annotations
 
-from reportlab.lib.pagesizes import A4
+from danfse.layout.coordinates import cm_to_pt
+from danfse.layout.layout_engine import build_layout_plan
+from danfse.layout.models import DanfseLayoutPlan
 
-PAGE_SIZE = A4
+PAGE_WIDTH_PT = cm_to_pt(21.0)
+PAGE_HEIGHT_PT = cm_to_pt(29.7)
 
-# PDF points (1/72 inch). A4 is ~595x842 points.
-PAGE_WIDTH, PAGE_HEIGHT = PAGE_SIZE
-
-# Margins (minimal working default)
-MARGIN_X = 36  # 0.5 inch
-MARGIN_Y = 36
-
+__all__ = [
+    "DanfseLayoutPlan",
+    "PAGE_HEIGHT_PT",
+    "PAGE_WIDTH_PT",
+    "build_layout_plan",
+]

@@ -6,18 +6,9 @@ from pathlib import Path
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas as rl_canvas
 
-from danfse.domain.models import DanfseData
 from danfse.exceptions import PdfRenderError
-from danfse.layout.constants import PAGE_HEIGHT, PAGE_WIDTH
-from danfse.layout.layout_engine import LayoutPlan
-from danfse.rules.formatting.descriptions import normalize_description
-from danfse.rules.formatting.primitives import (
-    format_date,
-    format_datetime,
-    format_document,
-    format_money,
-    truncate,
-)
+from danfse.layout.constants import PAGE_HEIGHT_PT, PAGE_WIDTH_PT
+from danfse.layout.models import DanfseLayoutPlan, LayoutElement
 from danfse.renderers.qrcode import QrCodePayload, build_qrcode_image
 from danfse.renderers.watermark import draw_watermark
 
@@ -25,138 +16,208 @@ from danfse.renderers.watermark import draw_watermark
 @dataclass(frozen=True)
 class PdfRenderOptions:
     watermark_text: str | None = None
+    logo_path: str | Path | None = None
 
 
-def render_pdf(plan: LayoutPlan, output_path: str | Path, *, options: PdfRenderOptions | None = None) -> None:
+def render_pdf(
+    plan: DanfseLayoutPlan,
+    output_path: str | Path,
+    *,
+    options: PdfRenderOptions | None = None,
+) -> None:
     options = options or PdfRenderOptions()
     out = Path(output_path)
     out.parent.mkdir(parents=True, exist_ok=True)
 
     try:
-        c = rl_canvas.Canvas(str(out), pagesize=(PAGE_WIDTH, PAGE_HEIGHT))
-        draw_watermark(c, options.watermark_text)
-        _draw(c, plan.data, plan)
-        c.showPage()
-        c.save()
+        pdf = rl_canvas.Canvas(str(out), pagesize=(PAGE_WIDTH_PT, PAGE_HEIGHT_PT))
+        watermark = options.watermark_text if options.watermark_text is not None else plan.watermark
+        draw_watermark(pdf, watermark or None)
+        _draw_page_border(pdf, plan)
+        if plan.homologacao_aviso:
+            _draw_homologacao_banner(pdf, plan.homologacao_aviso)
+        for block in plan.blocks:
+            if not block.visible:
+                continue
+            _draw_block_border(pdf, block.rect, plan.page.inner_line_width_pt)
+            for element in block.elements:
+                _draw_element(pdf, element, logo_path=options.logo_path)
+        pdf.showPage()
+        pdf.save()
     except Exception as exc:
         raise PdfRenderError(f"Failed to render PDF: {output_path}") from exc
 
 
-def _box_title(c, x: float, y: float, w: float, h: float, title: str) -> None:
-    c.setLineWidth(1)
-    c.rect(x, y, w, h, stroke=1, fill=0)
-    c.setFont("Helvetica-Bold", 10)
-    c.drawString(x + 6, y + h - 14, title)
+def _draw_page_border(pdf: rl_canvas.Canvas, plan: DanfseLayoutPlan) -> None:
+    rect = plan.page_rect
+    pdf.setLineWidth(plan.page.border_width_pt)
+    pdf.rect(rect.x_pt, rect.y_pt, rect.width_pt, rect.height_pt, stroke=1, fill=0)
 
 
-def _draw_kv(c, x: float, y: float, label: str, value: str, *, label_w: float = 120) -> None:
-    c.setFont("Helvetica", 9)
-    c.drawString(x, y, f"{label}:")
-    c.setFont("Helvetica-Bold", 9)
-    c.drawString(x + label_w, y, value or "")
+def _draw_block_border(pdf: rl_canvas.Canvas, rect, line_width: float) -> None:
+    pdf.setLineWidth(line_width)
+    pdf.rect(rect.x_pt, rect.y_pt, rect.width_pt, rect.height_pt, stroke=1, fill=0)
 
 
-def _draw(c, data: DanfseData, plan: LayoutPlan) -> None:
-    spec = plan.spec
-
-    # Header
-    hb = spec.header
-    _box_title(c, hb.x, hb.y, hb.w, hb.h, "DANFSe (versão inicial)")
-    c.setFont("Helvetica", 9)
-    c.drawString(hb.x + 6, hb.y + hb.h - 30, f"Município: {data.municipality or ''}")
-    _draw_kv(c, hb.x + 6, hb.y + hb.h - 48, "NFS-e Nº", data.nfse_number or "")
-    _draw_kv(c, hb.x + 6, hb.y + hb.h - 62, "Código verificação", data.verification_code or "")
-    _draw_kv(c, hb.x + 6, hb.y + hb.h - 76, "Emissão", format_datetime(data.issue_datetime))
-    _draw_kv(c, hb.x + 6, hb.y + hb.h - 90, "Competência", format_date(data.competence_date))
-
-    # Parties
-    pb = spec.parties
-    _box_title(c, pb.x, pb.y, pb.w, pb.h, "Prestador / Tomador")
-
-    left_x = pb.x + 6
-    mid_x = pb.x + pb.w / 2 + 6
-    top_y = pb.y + pb.h - 30
-
-    c.setFont("Helvetica-Bold", 9)
-    c.drawString(left_x, top_y, "Prestador")
-    c.drawString(mid_x, top_y, "Tomador")
-
-    _draw_kv(c, left_x, top_y - 14, "Nome", truncate(data.provider.name, 42))
-    _draw_kv(c, left_x, top_y - 28, "Doc", format_document(data.provider.document))
-    _draw_kv(c, left_x, top_y - 42, "IM", data.provider.municipal_registration or "")
-    _draw_kv(c, left_x, top_y - 56, "Endereço", truncate(data.provider.address, 42))
-    _draw_kv(c, left_x, top_y - 70, "Cidade/UF", " / ".join(filter(None, [data.provider.city, data.provider.state])))
-
-    _draw_kv(c, mid_x, top_y - 14, "Nome", truncate(data.taker.name, 42))
-    _draw_kv(c, mid_x, top_y - 28, "Doc", format_document(data.taker.document))
-    _draw_kv(c, mid_x, top_y - 42, "IM", data.taker.municipal_registration or "")
-    _draw_kv(c, mid_x, top_y - 56, "Endereço", truncate(data.taker.address, 42))
-    _draw_kv(c, mid_x, top_y - 70, "Cidade/UF", " / ".join(filter(None, [data.taker.city, data.taker.state])))
-
-    # Service
-    sb = spec.service
-    _box_title(c, sb.x, sb.y, sb.w, sb.h, "Serviço")
-
-    y = sb.y + sb.h - 30
-    _draw_kv(c, sb.x + 6, y, "Item lista", data.service_code or "", label_w=90)
-    _draw_kv(c, sb.x + 260, y, "CNAE", data.cnae or "", label_w=45)
-    _draw_kv(c, sb.x + 420, y, "Município", data.city_service_code or "", label_w=65)
-
-    desc = normalize_description(data.service_description)
-    c.setFont("Helvetica", 9)
-    c.drawString(sb.x + 6, y - 16, "Discriminação:")
-    c.setFont("Helvetica", 9)
-    text = c.beginText(sb.x + 6, y - 30)
-    text.setLeading(12)
-    for line in _wrap(desc, max_chars=120, max_lines=int((sb.h - 60) / 12)):
-        text.textLine(line)
-    c.drawText(text)
-
-    # Values
-    vb = spec.values
-    _box_title(c, vb.x, vb.y, vb.w, vb.h, "Valores")
-    base_y = vb.y + vb.h - 30
-    _draw_kv(c, vb.x + 6, base_y, "Serviços", format_money(data.values.total_services), label_w=90)
-    _draw_kv(c, vb.x + 6, base_y - 14, "Deduções", format_money(data.values.deductions), label_w=90)
-    _draw_kv(c, vb.x + 6, base_y - 28, "ISS", format_money(data.values.iss), label_w=90)
-    _draw_kv(c, vb.x + 6, base_y - 42, "Líquido", format_money(data.values.net_value), label_w=90)
-
-    # QR code (optional)
-    if data.qr_code_url:
-        img = build_qrcode_image(QrCodePayload(url=data.qr_code_url))
-        if img is not None:
-            qr_size = 72
-            c.drawImage(ImageReader(img), vb.x + vb.w - qr_size - 6, vb.y + 6, qr_size, qr_size)
-        else:
-            c.setFont("Helvetica", 7)
-            c.drawRightString(vb.x + vb.w - 6, vb.y + 10, "Instale extra 'danfse[qrcode]' p/ QRCode")
-
-    # Footer
-    fb = spec.footer
-    _box_title(c, fb.x, fb.y, fb.w, fb.h, "Observações")
-    c.setFont("Helvetica", 8)
-    c.drawString(fb.x + 6, fb.y + fb.h - 30, "Implementação mínima. Layout completo será evoluído.")
+def _draw_homologacao_banner(pdf: rl_canvas.Canvas, text: str) -> None:
+    pdf.saveState()
+    pdf.setFillColorRGB(1, 0.9, 0.9)
+    pdf.rect(36, PAGE_HEIGHT_PT - 72, PAGE_WIDTH_PT - 72, 24, stroke=0, fill=1)
+    pdf.setFillColorRGB(0.6, 0, 0)
+    pdf.setFont("Helvetica-Bold", 8)
+    pdf.drawCentredString(PAGE_WIDTH_PT / 2, PAGE_HEIGHT_PT - 64, text)
+    pdf.restoreState()
 
 
-def _wrap(text: str, *, max_chars: int, max_lines: int) -> list[str]:
+def _draw_element(
+    pdf: rl_canvas.Canvas,
+    element: LayoutElement,
+    *,
+    logo_path: str | Path | None,
+) -> None:
+    if element.shaded:
+        pdf.saveState()
+        pdf.setFillColorRGB(0.92, 0.92, 0.92)
+        pdf.rect(element.rect.x_pt, element.rect.y_pt, element.rect.width_pt, element.rect.height_pt, fill=1, stroke=0)
+        pdf.restoreState()
+
+    if element.kind == "image":
+        if logo_path:
+            pdf.drawImage(
+                ImageReader(str(logo_path)),
+                element.rect.x_pt,
+                element.rect.y_pt,
+                element.rect.width_pt,
+                element.rect.height_pt,
+                preserveAspectRatio=True,
+                mask="auto",
+            )
+        return
+
+    if element.kind == "qrcode":
+        _draw_qrcode(pdf, element)
+        return
+
+    if element.kind == "block_title":
+        _draw_block_title(pdf, element)
+        return
+
+    if element.kind == "fixed_text":
+        _draw_fixed_text(pdf, element)
+        return
+
+    _draw_labeled_value(pdf, element)
+
+
+def _draw_block_title(pdf: rl_canvas.Canvas, element: LayoutElement) -> None:
+    pdf.setFont("Helvetica-Bold", 7)
+    pdf.drawString(
+        element.rect.x_pt + 2,
+        element.rect.y_pt + element.rect.height_pt - 9,
+        element.value,
+    )
+
+
+def _draw_fixed_text(pdf: rl_canvas.Canvas, element: LayoutElement) -> None:
+    lines = element.value.splitlines() or [""]
+    if element.multiline:
+        _draw_multiline(pdf, element, lines, font_name="Helvetica", font_size=6, start_y=None)
+        return
+    pdf.setFont("Helvetica", 6)
+    pdf.drawString(
+        element.rect.x_pt + 2,
+        element.rect.y_pt + element.rect.height_pt - 8,
+        lines[0],
+    )
+
+
+def _draw_labeled_value(pdf: rl_canvas.Canvas, element: LayoutElement) -> None:
+    top_y = element.rect.y_pt + element.rect.height_pt
+    if element.label:
+        pdf.setFont("Helvetica", 5.5)
+        pdf.drawString(element.rect.x_pt + 2, top_y - 7, element.label)
+        value_top = top_y - 14
+    else:
+        value_top = top_y - 8
+
+    value = element.value
+    if element.max_chars is not None and len(value) > element.max_chars:
+        value = value[: element.max_chars]
+
+    if element.multiline:
+        _draw_multiline(
+            pdf,
+            element,
+            _wrap_text(value, element.max_chars),
+            font_name="Helvetica-Bold",
+            font_size=6.5,
+            start_y=value_top,
+        )
+        return
+
+    pdf.setFont("Helvetica-Bold", 6.5)
+    pdf.drawString(element.rect.x_pt + 2, value_top - 7, value)
+
+
+def _draw_multiline(
+    pdf: rl_canvas.Canvas,
+    element: LayoutElement,
+    lines: list[str],
+    *,
+    font_name: str,
+    font_size: float,
+    start_y: float | None = None,
+) -> None:
+    leading = font_size + 2
+    max_lines = max(1, int(element.rect.height_pt // leading))
+    lines = lines[:max_lines]
+    y = start_y if start_y is not None else element.rect.y_pt + element.rect.height_pt - 8
+    text_obj = pdf.beginText(element.rect.x_pt + 2, y)
+    text_obj.setFont(font_name, font_size)
+    text_obj.setLeading(leading)
+    for line in lines:
+        text_obj.textLine(line)
+    pdf.drawText(text_obj)
+
+
+def _draw_qrcode(pdf: rl_canvas.Canvas, element: LayoutElement) -> None:
+    if not element.value:
+        return
+    image = build_qrcode_image(QrCodePayload(url=element.value))
+    if image is None:
+        pdf.setFont("Helvetica", 5)
+        pdf.drawString(
+            element.rect.x_pt,
+            element.rect.y_pt + element.rect.height_pt / 2,
+            "QR indisponível",
+        )
+        return
+    pdf.drawImage(
+        ImageReader(image),
+        element.rect.x_pt,
+        element.rect.y_pt,
+        element.rect.width_pt,
+        element.rect.height_pt,
+        preserveAspectRatio=True,
+        mask="auto",
+    )
+
+
+def _wrap_text(text: str, max_chars: int | None) -> list[str]:
     if not text:
         return [""]
+    width = max_chars or 120
     words = text.split()
     lines: list[str] = []
     current: list[str] = []
-    for w in words:
-        candidate = (" ".join(current + [w])).strip()
-        if len(candidate) <= max_chars:
-            current.append(w)
+    for word in words:
+        candidate = " ".join(current + [word]).strip()
+        if len(candidate) <= width:
+            current.append(word)
             continue
         if current:
             lines.append(" ".join(current))
-        current = [w]
-        if len(lines) >= max_lines:
-            break
-    if len(lines) < max_lines and current:
+        current = [word]
+    if current:
         lines.append(" ".join(current))
-    if len(lines) > max_lines:
-        lines = lines[:max_lines]
-    return lines
-
+    return lines or [""]
