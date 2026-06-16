@@ -1,0 +1,89 @@
+Metadata-Version: 2.4
+Name: danfse
+Version: 0.1.0
+Summary: Generate DANFSe PDF (auxiliary NFS-e document) from Brazilian NFS-e XML.
+Author: DANFSe Contributors
+License: MIT License
+        
+        Copyright (c) 2026
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+        
+Project-URL: Homepage, https://pypi.org/project/danfse/
+Keywords: nfse,danfse,brazil,pdf,xml
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Office/Business :: Financial :: Accounting
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pydantic>=2.13.4
+Requires-Dist: reportlab>=4.0.0
+Provides-Extra: qrcode
+Requires-Dist: qrcode[pil]>=7.4.2; extra == "qrcode"
+Requires-Dist: pillow>=10.0.0; extra == "qrcode"
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=5.0.0; extra == "dev"
+Requires-Dist: ruff>=0.5.0; extra == "dev"
+Requires-Dist: mypy>=1.8.0; extra == "dev"
+Dynamic: license-file
+
+# danfse
+
+Python library to generate a **DANFSe** (Documento Auxiliar da NFS-e) **single-page A4 PDF**
+from a Brazilian NFS-e XML.
+
+## Install
+
+```bash
+pip install danfse
+```
+
+## Usage (library)
+
+```python
+from danfse import generate_danfse_pdf
+
+generate_danfse_pdf("invoice.xml", "danfse.pdf")
+```
+
+## Usage (CLI)
+
+```bash
+danfse generate invoice.xml danfse.pdf
+```
+
+## Status
+
+This is an initial minimal implementation:
+- Reads an XML file
+- Extracts a few common NFS-e fields (best-effort)
+- Generates a simple PDF layout on A4
+
+The codebase is organized in layers so it can evolve to full compliance with the official
+DANFSe spec (layout blocks, QR Code, watermark, conditional sections, etc.).
+
