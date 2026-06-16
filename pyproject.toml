@@ -23,6 +23,7 @@ classifiers = [
   "Topic :: Office/Business :: Financial :: Accounting",
 ]
 dependencies = [
+  "lxml>=5.0.0",
   "pydantic>=2.13.4",
   "reportlab>=4.0.0",
 ]
@@ -51,6 +52,7 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+pythonpath = ["."]
 
 [tool.ruff]
 line-length = 100

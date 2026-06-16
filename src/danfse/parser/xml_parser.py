@@ -1,48 +1,141 @@
 from __future__ import annotations
 
-import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
-from danfse.exceptions import XmlParseError
+from lxml import etree
+
+
+class DanfseParserError(Exception):
+    """Erro base do parser do DANFSe."""
+
+
+class InvalidXmlError(DanfseParserError):
+    """XML inválido ou malformado."""
 
 
 @dataclass(frozen=True)
 class XmlDocument:
-    root: ET.Element
+    """XML carregado e pronto para navegação pelo mapper."""
+
+    root: etree._Element
 
 
-def parse_xml(xml_path: str | Path) -> XmlDocument:
-    try:
-        path = Path(xml_path)
-        data = path.read_bytes()
-    except OSError as exc:
-        raise XmlParseError(f"Could not read XML file: {xml_path}") from exc
+class XmlNavigator:
+    """
+    Navegação genérica no XML ignorando namespace.
 
-    try:
-        root = ET.fromstring(data)
-    except ET.ParseError as exc:
-        raise XmlParseError("Invalid XML content.") from exc
+    Não conhece tags de domínio NFS-e/DANFSe; o mapper informa os caminhos.
+    """
 
+    __slots__ = ("_node",)
+
+    def __init__(self, node: etree._Element | None) -> None:
+        self._node = node
+
+    @property
+    def node(self) -> etree._Element | None:
+        return self._node
+
+    @property
+    def local_name(self) -> str | None:
+        if self._node is None:
+            return None
+        return etree.QName(self._node).localname
+
+    def at(self, *tags: str) -> XmlNavigator:
+        """Segue filhos diretos pelas tags informadas."""
+        return XmlNavigator(_child_path(self._node, tags))
+
+    def find(self, *tags: str) -> XmlNavigator:
+        """Busca caminho em profundidade pelas tags informadas."""
+        return XmlNavigator(_descendant_path(self._node, tags))
+
+    def value(self) -> str | None:
+        """Texto do nó atual."""
+        if self._node is None or self._node.text is None:
+            return None
+        text = self._node.text.strip()
+        return text or None
+
+    def text(self, *tags: str) -> str | None:
+        """Texto de um filho direto (ou caminho de filhos diretos)."""
+        if not tags:
+            return self.value()
+        return self.at(*tags).value()
+
+    def text_find(self, *tags: str) -> str | None:
+        """Texto de um descendente."""
+        return self.find(*tags).value()
+
+    def attr(self, name: str) -> str | None:
+        if self._node is None:
+            return None
+        value = self._node.attrib.get(name)
+        if value is None:
+            return None
+        value = value.strip()
+        return value or None
+
+
+def parse_xml(source: bytes | str | Path) -> XmlDocument:
+    """Carrega o XML e retorna um documento navegável."""
+    root = _load_xml(source)
     return XmlDocument(root=root)
 
 
-def _find_first_text(root: ET.Element, candidates: list[str]) -> Optional[str]:
-    """
-    Best-effort lookup: finds first element whose *local name* matches one of candidates.
-    This makes the minimal implementation tolerant to namespaces and vendor variations.
-    """
-
-    wanted = {c.lower() for c in candidates}
-    for el in root.iter():
-        if "}" in el.tag:
-            local = el.tag.rsplit("}", 1)[1]
+def _load_xml(source: bytes | str | Path) -> etree._Element:
+    if isinstance(source, bytes):
+        xml_bytes = source
+    elif isinstance(source, Path):
+        xml_bytes = source.read_bytes()
+    else:
+        value = source.strip()
+        if value.startswith("<"):
+            xml_bytes = value.encode("utf-8")
         else:
-            local = el.tag
-        if local.lower() in wanted:
-            text = (el.text or "").strip()
-            if text:
-                return text
-    return None
+            xml_bytes = Path(source).read_bytes()
 
+    parser = etree.XMLParser(
+        resolve_entities=False,
+        no_network=True,
+        remove_blank_text=True,
+        recover=False,
+    )
+
+    try:
+        return etree.fromstring(xml_bytes, parser=parser)
+    except etree.XMLSyntaxError as exc:
+        raise InvalidXmlError(str(exc)) from exc
+
+
+def _child_path(node: etree._Element | None, tags: tuple[str, ...]) -> etree._Element | None:
+    current = node
+
+    for tag in tags:
+        if current is None:
+            return None
+
+        found = None
+        for child in current:
+            if not isinstance(child.tag, str):
+                continue
+            if etree.QName(child).localname == tag:
+                found = child
+                break
+        current = found
+
+    return current
+
+
+def _descendant_path(node: etree._Element | None, tags: tuple[str, ...]) -> etree._Element | None:
+    if node is None:
+        return None
+
+    expression = ".//" + "/".join(f"*[local-name()='{tag}']" for tag in tags)
+    result = node.xpath(expression)
+
+    if not result:
+        return None
+
+    return result[0]

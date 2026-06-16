@@ -1,0 +1,1322 @@
+from __future__ import annotations
+
+from datetime import date, datetime
+from decimal import Decimal
+
+from danfse.domain.models import (
+    BeneficioMunicipalDanfse,
+    CabecalhoDanfse,
+    CanhotoDanfse,
+    CbsDanfse,
+    ClassificacaoTributariaIbsCbsDanfse,
+    CodigoServicoDanfse,
+    DanfseData,
+    DeducoesReducoesDanfse,
+    DestinatarioDanfse,
+    DocumentoPessoaDanfse,
+    EnderecoDanfse,
+    EventoDanfse,
+    ExclusoesReducoesBaseCalculoIbsCbsDanfse,
+    IbsMunicipalDanfse,
+    IbsUfDanfse,
+    ImovelDanfse,
+    IncidenciaIbsCbsDanfse,
+    InformacoesComplementaresDanfse,
+    IdentificacaoNfseDanfse,
+    IntermediarioDanfse,
+    LocalIncidenciaIssqnDanfse,
+    LocalPrestacaoDanfse,
+    ObraDanfse,
+    PedidoDanfse,
+    PrestadorDanfse,
+    RegimeTributarioPrestadorDanfse,
+    ServicoPrestadoDanfse,
+    StatusVisualDanfse,
+    SuspensaoExigibilidadeIssqnDanfse,
+    TomadorDanfse,
+    TotaisAproximadosTributosDanfse,
+    TotaisDanfse,
+    TributacaoFederalDanfse,
+    TributacaoIbsCbsDanfse,
+    TributacaoMunicipalDanfse,
+    ValoresServicoDanfse,
+)
+
+def expected_nota_gov_1_29154166000144() -> DanfseData:
+    return DanfseData(
+        cabecalho=
+        CabecalhoDanfse(
+            uf_emitente='AL',
+            ambiente_gerador='2',
+            tipo_ambiente='1',
+        ),
+        identificacao=
+        IdentificacaoNfseDanfse(
+            numero_nfse='1',
+            competencia_nfse=date.fromisoformat('2026-02-23'),
+            data_hora_emissao_nfse=datetime.fromisoformat('2026-02-23T16:51:42-03:00'),
+            numero_dps='1',
+            serie_dps='70000',
+            data_hora_emissao_dps=datetime.fromisoformat('2026-02-23T16:51:42-03:00'),
+            emitente_nfse='1',
+            situacao_nfse='100',
+        ),
+        prestador=
+        PrestadorDanfse(
+            documento=
+            DocumentoPessoaDanfse(
+                cnpj='29154166000144',
+            ),
+            inscricao_municipal='152794',
+            telefone='8235213576',
+            email='cccpfiscal@hotmail.com',
+            regime_tributario=
+            RegimeTributarioPrestadorDanfse(
+                simples_nacional_competencia='3',
+                regime_apuracao_tributaria_sn='1',
+                regime_especial_tributacao='0',
+            ),
+        ),
+        tomador=
+        TomadorDanfse(
+            documento=
+            DocumentoPessoaDanfse(
+                cnpj='12517413000208',
+            ),
+            inscricao_municipal='30210',
+            nome='SERVICO DE APOIO AS M E P EMPRESAS DE ALAGOAS-SEBRAE-AL',
+            endereco=
+            EnderecoDanfse(
+                codigo_municipio='2700300',
+                cep='57300100',
+                logradouro='ENGENHEIRO GORDILHO DE CASTRO',
+                numero='80',
+                bairro='CENTRO',
+            ),
+            email='verdiana.lopes@al.sebrae.com.br',
+        ),
+        servico=
+        ServicoPrestadoDanfse(
+            codigo_servico=
+            CodigoServicoDanfse(
+                codigo_tributacao_nacional='170101',
+                descricao_tributacao_nacional='Assessoria ou consultoria de qualquer natureza, não contida em outros itens desta\n            lista.',
+                codigo_nbs='114021100',
+            ),
+            local_prestacao=
+            LocalPrestacaoDanfse(
+                codigo_municipio='2700300',
+                municipio='Arapiraca',
+                local_prestacao_texto='Arapiraca',
+            ),
+            descricao_servico='00103/26 AE 409051 Item 0001',
+        ),
+        valores_servico=
+        ValoresServicoDanfse(
+            valor_servico=Decimal("1000.00"),
+        ),
+        tributacao_municipal=
+        TributacaoMunicipalDanfse(
+            tipo_tributacao_issqn='1',
+            local_incidencia=
+            LocalIncidenciaIssqnDanfse(
+                municipio='Arapiraca',
+                local_incidencia_texto='Arapiraca',
+            ),
+            regime_especial_tributacao_issqn='0',
+            base_calculo_issqn=Decimal("1000.00"),
+            aliquota_aplicada=Decimal("2.01"),
+            retencao_issqn='2',
+            valor_issqn_apurado=Decimal("20.10"),
+            operacao_sujeita_issqn=True,
+        ),
+        totais=
+        TotaisDanfse(
+            valor_operacao_servico=Decimal("1000.00"),
+            total_retencoes_issqn_federais=Decimal("20.10"),
+            valor_liquido_nfse=Decimal("979.90"),
+        ),
+        status_visual=
+        StatusVisualDanfse(
+            is_homologacao=False,
+            is_cancelada=False,
+            is_substituida=False,
+            tomador_nao_identificado=False,
+            destinatario_nao_identificado=True,
+            destinatario_igual_tomador=False,
+            intermediario_nao_identificado=True,
+            operacao_nao_sujeita_issqn=False,
+        ),
+    )
+
+
+def expected_nota_gov_1_33762922000195() -> DanfseData:
+    return DanfseData(
+        cabecalho=
+        CabecalhoDanfse(
+            uf_emitente='AL',
+            ambiente_gerador='2',
+            tipo_ambiente='1',
+        ),
+        identificacao=
+        IdentificacaoNfseDanfse(
+            numero_nfse='1',
+            competencia_nfse=date.fromisoformat('2026-03-12'),
+            data_hora_emissao_nfse=datetime.fromisoformat('2026-03-12T16:35:01-03:00'),
+            numero_dps='1',
+            serie_dps='70000',
+            data_hora_emissao_dps=datetime.fromisoformat('2026-03-12T16:35:01-03:00'),
+            emitente_nfse='1',
+            situacao_nfse='100',
+        ),
+        prestador=
+        PrestadorDanfse(
+            documento=
+            DocumentoPessoaDanfse(
+                cnpj='33762922000195',
+            ),
+            telefone='8299301159',
+            email='CARVALHOCONTABILIDADE001@GMAIL.COM',
+            regime_tributario=
+            RegimeTributarioPrestadorDanfse(
+                simples_nacional_competencia='3',
+                regime_apuracao_tributaria_sn='1',
+                regime_especial_tributacao='0',
+            ),
+        ),
+        tomador=
+        TomadorDanfse(
+            documento=
+            DocumentoPessoaDanfse(
+                cnpj='12517413000470',
+            ),
+            nome='SERVICO DE APOIO AS M E P EMPRESAS DE ALAGOAS-SEBRAE-AL',
+            endereco=
+            EnderecoDanfse(
+                codigo_municipio='2702405',
+                cep='57480000',
+                logradouro='PRESIDENTE CASTELO BRANCO',
+                numero='60',
+                complemento='BLOCO F LOJA 01 ANEXO SHOPPING DA VILA',
+                bairro='CENTRO',
+            ),
+        ),
+        servico=
+        ServicoPrestadoDanfse(
+            codigo_servico=
+            CodigoServicoDanfse(
+                codigo_tributacao_nacional='171101',
+                descricao_tributacao_nacional='Organização de festas e recepções.',
+            ),
+            local_prestacao=
+            LocalPrestacaoDanfse(
+                codigo_municipio='2706406',
+                municipio='Pão de Açúcar',
+                local_prestacao_texto='Pão de Açúcar',
+            ),
+            descricao_servico='Serviço e Fornecimento de Alimentação, Almoço!',
+        ),
+        valores_servico=
+        ValoresServicoDanfse(
+            valor_servico=Decimal("43.00"),
+        ),
+        tributacao_municipal=
+        TributacaoMunicipalDanfse(
+            tipo_tributacao_issqn='1',
+            local_incidencia=
+            LocalIncidenciaIssqnDanfse(
+                municipio='Pão de Açúcar',
+                local_incidencia_texto='Pão de Açúcar',
+            ),
+            regime_especial_tributacao_issqn='0',
+            retencao_issqn='1',
+            operacao_sujeita_issqn=True,
+        ),
+        totais=
+        TotaisDanfse(
+            valor_operacao_servico=Decimal("43.00"),
+            valor_liquido_nfse=Decimal("43.00"),
+        ),
+        status_visual=
+        StatusVisualDanfse(
+            is_homologacao=False,
+            is_cancelada=False,
+            is_substituida=False,
+            tomador_nao_identificado=False,
+            destinatario_nao_identificado=True,
+            destinatario_igual_tomador=False,
+            intermediario_nao_identificado=True,
+            operacao_nao_sujeita_issqn=False,
+        ),
+    )
+
+
+def expected_nota_gov_1_39549075000161() -> DanfseData:
+    return DanfseData(
+        cabecalho=
+        CabecalhoDanfse(
+            uf_emitente='AL',
+            ambiente_gerador='2',
+            tipo_ambiente='1',
+        ),
+        identificacao=
+        IdentificacaoNfseDanfse(
+            numero_nfse='1',
+            competencia_nfse=date.fromisoformat('2026-02-20'),
+            data_hora_emissao_nfse=datetime.fromisoformat('2026-02-20T15:17:37-03:00'),
+            numero_dps='1',
+            serie_dps='70000',
+            data_hora_emissao_dps=datetime.fromisoformat('2026-02-20T15:17:37-03:00'),
+            emitente_nfse='1',
+            situacao_nfse='100',
+        ),
+        prestador=
+        PrestadorDanfse(
+            documento=
+            DocumentoPessoaDanfse(
+                cnpj='39549075000161',
+            ),
+            inscricao_municipal='163233',
+            telefone='00000000000',
+            email='julianlemos.financeiro@gmail.com',
+            regime_tributario=
+            RegimeTributarioPrestadorDanfse(
+                simples_nacional_competencia='1',
+                regime_especial_tributacao='0',
+            ),
+        ),
+        tomador=
+        TomadorDanfse(
+            documento=
+            DocumentoPessoaDanfse(
+                cnpj='12517413000208',
+            ),
+            inscricao_municipal='30210',
+            nome='SERVICO DE APOIO AS M E P EMPRESAS DE ALAGOAS-SEBRAE-AL',
+            endereco=
+            EnderecoDanfse(
+                codigo_municipio='2700300',
+                cep='57300100',
+                logradouro='ENGENHEIRO GORDILHO DE CASTRO',
+                numero='80',
+                bairro='CENTRO',
+            ),
+            email='verdiana.lopes@al.sebrae.com.br',
+        ),
+        servico=
+        ServicoPrestadoDanfse(
+            codigo_servico=
+            CodigoServicoDanfse(
+                codigo_tributacao_nacional='172001',
+                descricao_tributacao_nacional='Consultoria e assessoria econômica ou financeira.',
+                codigo_nbs='109055000',
+            ),
+            local_prestacao=
+            LocalPrestacaoDanfse(
+                codigo_municipio='2700300',
+                municipio='Arapiraca',
+                local_prestacao_texto='Arapiraca',
+            ),
+            descricao_servico='Contrato 00146/26 AE 409112 Item 0001',
+        ),
+        valores_servico=
+        ValoresServicoDanfse(
+            valor_servico=Decimal("928.00"),
+        ),
+        tributacao_municipal=
+        TributacaoMunicipalDanfse(
+            tipo_tributacao_issqn='1',
+            local_incidencia=
+            LocalIncidenciaIssqnDanfse(
+                municipio='Arapiraca',
+                local_incidencia_texto='Arapiraca',
+            ),
+            regime_especial_tributacao_issqn='0',
+            base_calculo_issqn=Decimal("928.00"),
+            aliquota_aplicada=Decimal("5.00"),
+            retencao_issqn='2',
+            valor_issqn_apurado=Decimal("46.40"),
+            operacao_sujeita_issqn=True,
+        ),
+        totais=
+        TotaisDanfse(
+            valor_operacao_servico=Decimal("928.00"),
+            total_retencoes_issqn_federais=Decimal("46.40"),
+            valor_liquido_nfse=Decimal("881.60"),
+        ),
+        informacoes_complementares=
+        InformacoesComplementaresDanfse(
+            totais_aproximados_tributos=
+            TotaisAproximadosTributosDanfse(
+                percentual_total_tributos_federais=Decimal("11.33"),
+                percentual_total_tributos_estaduais=Decimal("0.00"),
+                percentual_total_tributos_municipais=Decimal("5.00"),
+            ),
+        ),
+        status_visual=
+        StatusVisualDanfse(
+            is_homologacao=False,
+            is_cancelada=False,
+            is_substituida=False,
+            tomador_nao_identificado=False,
+            destinatario_nao_identificado=True,
+            destinatario_igual_tomador=False,
+            intermediario_nao_identificado=True,
+            operacao_nao_sujeita_issqn=False,
+        ),
+    )
+
+
+def expected_nota_gov_215_1750331400100() -> DanfseData:
+    return DanfseData(
+        cabecalho=
+        CabecalhoDanfse(
+            uf_emitente='AL',
+            ambiente_gerador='1',
+            tipo_ambiente='1',
+        ),
+        identificacao=
+        IdentificacaoNfseDanfse(
+            numero_nfse='215',
+            competencia_nfse=date.fromisoformat('2026-05-21'),
+            data_hora_emissao_nfse=datetime.fromisoformat('2026-05-21T15:25:44-03:00'),
+            numero_dps='215',
+            serie_dps='100',
+            data_hora_emissao_dps=datetime.fromisoformat('2026-05-21T00:00:00-03:00'),
+            emitente_nfse='1',
+            situacao_nfse='100',
+        ),
+        prestador=
+        PrestadorDanfse(
+            documento=
+            DocumentoPessoaDanfse(
+                cnpj='17503314000100',
+            ),
+            inscricao_municipal='402495',
+            telefone='82991048081',
+            email='s.aquino@hotmail.com',
+            regime_tributario=
+            RegimeTributarioPrestadorDanfse(
+                simples_nacional_competencia='3',
+                regime_apuracao_tributaria_sn='1',
+                regime_especial_tributacao='0',
+            ),
+        ),
+        tomador=
+        TomadorDanfse(
+            documento=
+            DocumentoPessoaDanfse(
+                cnpj='12517413000470',
+            ),
+            telefone='82991081790',
+            nome='SERVICO DE APOIO AS M E P EMPRESAS DE ALAGOAS-SEBRAE-AL',
+            endereco=
+            EnderecoDanfse(
+                codigo_municipio='2702405',
+                cep='57480000',
+                logradouro='Presidente Castelo Branco',
+                numero='60',
+                complemento='BLOCO F LOJA 01 ANEXO SHOPPING DA VILA',
+                bairro='Centro',
+            ),
+            email='andre.mauricio@al.sebrae.com.br',
+        ),
+        servico=
+        ServicoPrestadoDanfse(
+            codigo_servico=
+            CodigoServicoDanfse(
+                codigo_tributacao_nacional='170101',
+                descricao_tributacao_nacional='Assessoria ou consultoria de qualquer natureza, não contida em outros itens desta lista.',
+                codigo_nbs='114011300',
+            ),
+            local_prestacao=
+            LocalPrestacaoDanfse(
+                codigo_municipio='2702405',
+                municipio='DELMIRO GOUVEIA',
+                local_prestacao_texto='DELMIRO GOUVEIA',
+            ),
+            descricao_servico='CONTRATO 00358/26 AE 410162 ITEM 0001',
+        ),
+        valores_servico=
+        ValoresServicoDanfse(
+            valor_servico=Decimal("3480.00"),
+        ),
+        tributacao_municipal=
+        TributacaoMunicipalDanfse(
+            tipo_tributacao_issqn='1',
+            local_incidencia=
+            LocalIncidenciaIssqnDanfse(
+                municipio='DELMIRO GOUVEIA',
+                local_incidencia_texto='DELMIRO GOUVEIA',
+            ),
+            regime_especial_tributacao_issqn='0',
+            aliquota_aplicada=Decimal("2.01"),
+            retencao_issqn='2',
+            valor_issqn_apurado=Decimal("69.95"),
+            operacao_sujeita_issqn=True,
+        ),
+        totais=
+        TotaisDanfse(
+            valor_operacao_servico=Decimal("3480.00"),
+            total_retencoes_issqn_federais=Decimal("69.95"),
+            valor_liquido_nfse=Decimal("3410.05"),
+        ),
+        informacoes_complementares=
+        InformacoesComplementaresDanfse(
+            totais_aproximados_tributos=
+            TotaisAproximadosTributosDanfse(
+                valor_total_tributos_federais=Decimal("0.00"),
+                valor_total_tributos_estaduais=Decimal("0"),
+                valor_total_tributos_municipais=Decimal("69.95"),
+            ),
+        ),
+        status_visual=
+        StatusVisualDanfse(
+            is_homologacao=False,
+            is_cancelada=False,
+            is_substituida=False,
+            tomador_nao_identificado=False,
+            destinatario_nao_identificado=True,
+            destinatario_igual_tomador=False,
+            intermediario_nao_identificado=True,
+            operacao_nao_sujeita_issqn=False,
+        ),
+    )
+
+
+def expected_nota_gov_2600000000196_17086031000100() -> DanfseData:
+    return DanfseData(
+        cabecalho=
+        CabecalhoDanfse(
+            uf_emitente='PE',
+            ambiente_gerador='1',
+            tipo_ambiente='1',
+        ),
+        identificacao=
+        IdentificacaoNfseDanfse(
+            numero_nfse='2600000000196',
+            competencia_nfse=date.fromisoformat('2026-03-02'),
+            data_hora_emissao_nfse=datetime.fromisoformat('2026-03-02T13:27:57Z'),
+            numero_dps='2600000000196',
+            serie_dps='2026',
+            data_hora_emissao_dps=datetime.fromisoformat('2026-03-02T13:27:57Z'),
+            emitente_nfse='1',
+            situacao_nfse='100',
+        ),
+        prestador=
+        PrestadorDanfse(
+            documento=
+            DocumentoPessoaDanfse(
+                cnpj='17086031000100',
+            ),
+            inscricao_municipal='0948411',
+            telefone='81322843',
+            email='ATITUDESERVICOSEIRELI@GMAIL.COM',
+            regime_tributario=
+            RegimeTributarioPrestadorDanfse(
+                simples_nacional_competencia='1',
+                regime_especial_tributacao='0',
+            ),
+        ),
+        tomador=
+        TomadorDanfse(
+            documento=
+            DocumentoPessoaDanfse(
+                cnpj='12517413000470',
+            ),
+            nome='SERVICO DE APOIO AS M E P EMPRESAS DE ALAGOAS SEBRAE/AL',
+            endereco=
+            EnderecoDanfse(
+                codigo_municipio='2702405',
+                cep='57480000',
+                logradouro='R 13 DE MAIO',
+                numero='310',
+                bairro='CENTRO',
+            ),
+        ),
+        servico=
+        ServicoPrestadoDanfse(
+            codigo_servico=
+            CodigoServicoDanfse(
+                codigo_tributacao_nacional='170501',
+                descricao_tributacao_nacional='Fornecimento de mão-de-obra, mesmo em caráter temporário, inclusive de empregados\n            ou trabalhadores, avulsos ou temporários, contratados pelo prestador de serviço.',
+                codigo_nbs='118012100',
+            ),
+            local_prestacao=
+            LocalPrestacaoDanfse(
+                codigo_municipio='2702405',
+                municipio='DELMIRO GOUVEIA',
+                local_prestacao_texto='DELMIRO GOUVEIA',
+            ),
+            descricao_servico='PRESTACAO DE SERVICOS DE PORTARIA NO SEBRAE - SERVICO BRASILEIRO\n                            DE APOIO AS MICRO E PEQUENAS EMPRESAS EM ALAGOAS LOCALIZADO NA R 13 DE\n                            MAIO, N 310 - CENTRO, DELMIRO GOUVEIA - AL, CEP: 57480-000. NO PERIODO\n                            DE JANEIRO DE 2026. AE: 409446 - ITENS: 0015 E 0017. DADOS BANCARIOS:\n                            BANCO: CAIXA ECONOMICA AGÊNCIA: 4253 CONTA CORRENTE: 000577231652-0',
+        ),
+        valores_servico=
+        ValoresServicoDanfse(
+            valor_servico=Decimal("14754.28"),
+        ),
+        tributacao_municipal=
+        TributacaoMunicipalDanfse(
+            tipo_tributacao_issqn='1',
+            local_incidencia=
+            LocalIncidenciaIssqnDanfse(
+                municipio='DELMIRO GOUVEIA',
+                local_incidencia_texto='DELMIRO GOUVEIA',
+            ),
+            regime_especial_tributacao_issqn='0',
+            base_calculo_issqn=Decimal("14754.28"),
+            aliquota_aplicada=Decimal("5.00"),
+            retencao_issqn='2',
+            valor_issqn_apurado=Decimal("737.71"),
+            operacao_sujeita_issqn=True,
+        ),
+        tributacao_federal=
+        TributacaoFederalDanfse(
+            valor_retencao_irrf=Decimal("147.54"),
+            valor_retencao_contribuicao_previdenciaria=Decimal("1622.97"),
+            valor_retencao_csll=Decimal("147.54"),
+            valor_pis_debito_apuracao_propria=Decimal("95.90"),
+            valor_cofins_debito_apuracao_propria=Decimal("442.63"),
+            tipo_retencao_pis_cofins='1',
+        ),
+        totais=
+        TotaisDanfse(
+            valor_operacao_servico=Decimal("14754.28"),
+            total_retencoes_issqn_federais=Decimal("1571.32"),
+            valor_liquido_nfse=Decimal("11559.99"),
+        ),
+        status_visual=
+        StatusVisualDanfse(
+            is_homologacao=False,
+            is_cancelada=False,
+            is_substituida=False,
+            tomador_nao_identificado=False,
+            destinatario_nao_identificado=True,
+            destinatario_igual_tomador=False,
+            intermediario_nao_identificado=True,
+            operacao_nao_sujeita_issqn=False,
+        ),
+    )
+
+
+def expected_nota_gov_2600000000197_17086031000100() -> DanfseData:
+    return DanfseData(
+        cabecalho=
+        CabecalhoDanfse(
+            uf_emitente='PE',
+            ambiente_gerador='1',
+            tipo_ambiente='1',
+        ),
+        identificacao=
+        IdentificacaoNfseDanfse(
+            numero_nfse='2600000000197',
+            competencia_nfse=date.fromisoformat('2026-03-02'),
+            data_hora_emissao_nfse=datetime.fromisoformat('2026-03-02T13:31:55Z'),
+            numero_dps='2600000000197',
+            serie_dps='2026',
+            data_hora_emissao_dps=datetime.fromisoformat('2026-03-02T13:31:55Z'),
+            emitente_nfse='1',
+            situacao_nfse='100',
+        ),
+        prestador=
+        PrestadorDanfse(
+            documento=
+            DocumentoPessoaDanfse(
+                cnpj='17086031000100',
+            ),
+            inscricao_municipal='0948411',
+            telefone='81322843',
+            email='ATITUDESERVICOSEIRELI@GMAIL.COM',
+            regime_tributario=
+            RegimeTributarioPrestadorDanfse(
+                simples_nacional_competencia='1',
+                regime_especial_tributacao='0',
+            ),
+        ),
+        tomador=
+        TomadorDanfse(
+            documento=
+            DocumentoPessoaDanfse(
+                cnpj='12517413000208',
+            ),
+            nome='SERVICO DE APOIO AS M E P EMPRESAS DE ALAGOAS SEBRAE AL',
+            endereco=
+            EnderecoDanfse(
+                codigo_municipio='2700300',
+                cep='57300100',
+                logradouro='R ENGENHEIRO GORDILHO DE CASTRO',
+                numero='80',
+                bairro='CENTRO',
+            ),
+            email='nota.nfe@al.sebrae.com.br',
+        ),
+        servico=
+        ServicoPrestadoDanfse(
+            codigo_servico=
+            CodigoServicoDanfse(
+                codigo_tributacao_nacional='170501',
+                descricao_tributacao_nacional='Fornecimento de mão-de-obra, mesmo em caráter temporário, inclusive de empregados\n            ou trabalhadores, avulsos ou temporários, contratados pelo prestador de serviço.',
+                codigo_nbs='118012100',
+            ),
+            local_prestacao=
+            LocalPrestacaoDanfse(
+                codigo_municipio='2700300',
+                municipio='ARAPIRACA',
+                local_prestacao_texto='ARAPIRACA',
+            ),
+            descricao_servico='PRESTACAO DE SERVICOS DE PORTARIA NO SEBRAE - SERVICO BRASILEIRO\n                            DE APOIO AS MICRO E PEQUENAS EMPRESAS EM ALAGOAS LOCALIZADO R ENGENHEIRO\n                            GORDILHO DE CASTRO, N 80 - CENTRO, ARAPIRACA - AL, CEP: 57300-100. NO\n                            PERIODO DE JANEIRO DE 2026. AE: 409446 - ITENS: 0007 E 0009. DADOS\n                            BANCARIOS: BANCO: CAIXA ECONOMICA AGÊNCIA: 4253 CONTA CORRENTE:\n                            000577231652-0',
+        ),
+        valores_servico=
+        ValoresServicoDanfse(
+            valor_servico=Decimal("14773.30"),
+        ),
+        tributacao_municipal=
+        TributacaoMunicipalDanfse(
+            tipo_tributacao_issqn='1',
+            local_incidencia=
+            LocalIncidenciaIssqnDanfse(
+                municipio='ARAPIRACA',
+                local_incidencia_texto='ARAPIRACA',
+            ),
+            regime_especial_tributacao_issqn='0',
+            base_calculo_issqn=Decimal("14773.30"),
+            aliquota_aplicada=Decimal("5.00"),
+            retencao_issqn='2',
+            valor_issqn_apurado=Decimal("738.67"),
+            operacao_sujeita_issqn=True,
+        ),
+        tributacao_federal=
+        TributacaoFederalDanfse(
+            valor_retencao_irrf=Decimal("147.73"),
+            valor_retencao_contribuicao_previdenciaria=Decimal("1625.06"),
+            valor_retencao_csll=Decimal("147.73"),
+            valor_pis_debito_apuracao_propria=Decimal("96.03"),
+            valor_cofins_debito_apuracao_propria=Decimal("443.20"),
+            tipo_retencao_pis_cofins='1',
+        ),
+        totais=
+        TotaisDanfse(
+            valor_operacao_servico=Decimal("14773.30"),
+            total_retencoes_issqn_federais=Decimal("1573.36"),
+            valor_liquido_nfse=Decimal("11574.88"),
+        ),
+        status_visual=
+        StatusVisualDanfse(
+            is_homologacao=False,
+            is_cancelada=False,
+            is_substituida=False,
+            tomador_nao_identificado=False,
+            destinatario_nao_identificado=True,
+            destinatario_igual_tomador=False,
+            intermediario_nao_identificado=True,
+            operacao_nao_sujeita_issqn=False,
+        ),
+    )
+
+
+def expected_nota_gov_2_39549075000161() -> DanfseData:
+    return DanfseData(
+        cabecalho=
+        CabecalhoDanfse(
+            uf_emitente='AL',
+            ambiente_gerador='2',
+            tipo_ambiente='1',
+        ),
+        identificacao=
+        IdentificacaoNfseDanfse(
+            numero_nfse='2',
+            competencia_nfse=date.fromisoformat('2026-03-02'),
+            data_hora_emissao_nfse=datetime.fromisoformat('2026-03-02T12:10:21-03:00'),
+            numero_dps='2',
+            serie_dps='70000',
+            data_hora_emissao_dps=datetime.fromisoformat('2026-03-02T12:10:21-03:00'),
+            emitente_nfse='1',
+            situacao_nfse='100',
+        ),
+        prestador=
+        PrestadorDanfse(
+            documento=
+            DocumentoPessoaDanfse(
+                cnpj='39549075000161',
+            ),
+            inscricao_municipal='163233',
+            telefone='00000000000',
+            email='julianlemos.financeiro@gmail.com',
+            regime_tributario=
+            RegimeTributarioPrestadorDanfse(
+                simples_nacional_competencia='1',
+                regime_especial_tributacao='0',
+            ),
+        ),
+        tomador=
+        TomadorDanfse(
+            documento=
+            DocumentoPessoaDanfse(
+                cnpj='12517413000208',
+            ),
+            inscricao_municipal='30210',
+            nome='SERVICO DE APOIO AS M E P EMPRESAS DE ALAGOAS-SEBRAE-AL',
+            endereco=
+            EnderecoDanfse(
+                codigo_municipio='2700300',
+                cep='57300100',
+                logradouro='ENGENHEIRO GORDILHO DE CASTRO',
+                numero='80',
+                bairro='CENTRO',
+            ),
+            email='verdiana.lopes@al.sebrae.com.br',
+        ),
+        servico=
+        ServicoPrestadoDanfse(
+            codigo_servico=
+            CodigoServicoDanfse(
+                codigo_tributacao_nacional='172001',
+                descricao_tributacao_nacional='Consultoria e assessoria econômica ou financeira.',
+                codigo_nbs='109055000',
+            ),
+            local_prestacao=
+            LocalPrestacaoDanfse(
+                codigo_municipio='2700300',
+                municipio='Arapiraca',
+                local_prestacao_texto='Arapiraca',
+            ),
+            descricao_servico='Contrato 00146/26 AE 409112 Item 0001',
+        ),
+        valores_servico=
+        ValoresServicoDanfse(
+            valor_servico=Decimal("928.00"),
+        ),
+        tributacao_municipal=
+        TributacaoMunicipalDanfse(
+            tipo_tributacao_issqn='1',
+            local_incidencia=
+            LocalIncidenciaIssqnDanfse(
+                municipio='Arapiraca',
+                local_incidencia_texto='Arapiraca',
+            ),
+            regime_especial_tributacao_issqn='0',
+            base_calculo_issqn=Decimal("928.00"),
+            aliquota_aplicada=Decimal("5.00"),
+            retencao_issqn='2',
+            valor_issqn_apurado=Decimal("46.40"),
+            operacao_sujeita_issqn=True,
+        ),
+        tributacao_federal=
+        TributacaoFederalDanfse(
+            valor_retencao_irrf=Decimal("13.92"),
+            valor_retencao_csll=Decimal("9.28"),
+            valor_pis_debito_apuracao_propria=Decimal("6.03"),
+            valor_cofins_debito_apuracao_propria=Decimal("27.84"),
+            tipo_retencao_pis_cofins='3',
+        ),
+        totais=
+        TotaisDanfse(
+            valor_operacao_servico=Decimal("928.00"),
+            total_retencoes_issqn_federais=Decimal("69.60"),
+            valor_liquido_nfse=Decimal("858.40"),
+        ),
+        informacoes_complementares=
+        InformacoesComplementaresDanfse(
+            totais_aproximados_tributos=
+            TotaisAproximadosTributosDanfse(
+                percentual_total_tributos_federais=Decimal("11.33"),
+                percentual_total_tributos_estaduais=Decimal("0.00"),
+                percentual_total_tributos_municipais=Decimal("5.00"),
+            ),
+        ),
+        status_visual=
+        StatusVisualDanfse(
+            is_homologacao=False,
+            is_cancelada=False,
+            is_substituida=False,
+            tomador_nao_identificado=False,
+            destinatario_nao_identificado=True,
+            destinatario_igual_tomador=False,
+            intermediario_nao_identificado=True,
+            operacao_nao_sujeita_issqn=False,
+        ),
+    )
+
+
+def expected_nota_gov_3_39549075000161() -> DanfseData:
+    return DanfseData(
+        cabecalho=
+        CabecalhoDanfse(
+            uf_emitente='AL',
+            ambiente_gerador='2',
+            tipo_ambiente='1',
+        ),
+        identificacao=
+        IdentificacaoNfseDanfse(
+            numero_nfse='3',
+            competencia_nfse=date.fromisoformat('2026-03-02'),
+            data_hora_emissao_nfse=datetime.fromisoformat('2026-03-02T16:46:04-03:00'),
+            numero_dps='3',
+            serie_dps='70000',
+            data_hora_emissao_dps=datetime.fromisoformat('2026-03-02T16:46:04-03:00'),
+            emitente_nfse='1',
+            situacao_nfse='101',
+        ),
+        prestador=
+        PrestadorDanfse(
+            documento=
+            DocumentoPessoaDanfse(
+                cnpj='39549075000161',
+            ),
+            inscricao_municipal='163233',
+            telefone='00000000000',
+            email='julianlemos.financeiro@gmail.com',
+            regime_tributario=
+            RegimeTributarioPrestadorDanfse(
+                simples_nacional_competencia='1',
+                regime_especial_tributacao='0',
+            ),
+        ),
+        tomador=
+        TomadorDanfse(
+            documento=
+            DocumentoPessoaDanfse(
+                cnpj='12517413000208',
+            ),
+            inscricao_municipal='30210',
+            nome='SERVICO DE APOIO AS M E P EMPRESAS DE ALAGOAS-SEBRAE-AL',
+            endereco=
+            EnderecoDanfse(
+                codigo_municipio='2700300',
+                cep='57300100',
+                logradouro='ENGENHEIRO GORDILHO DE CASTRO',
+                numero='80',
+                bairro='CENTRO',
+            ),
+            email='verdiana.lopes@al.sebrae.com.br',
+        ),
+        servico=
+        ServicoPrestadoDanfse(
+            codigo_servico=
+            CodigoServicoDanfse(
+                codigo_tributacao_nacional='172001',
+                descricao_tributacao_nacional='Consultoria e assessoria econômica ou financeira.',
+                codigo_nbs='109055000',
+            ),
+            local_prestacao=
+            LocalPrestacaoDanfse(
+                codigo_municipio='2700300',
+                municipio='Arapiraca',
+                local_prestacao_texto='Arapiraca',
+            ),
+            descricao_servico='Contrato 00146/26 AE 409112 Item 0001',
+        ),
+        valores_servico=
+        ValoresServicoDanfse(
+            valor_servico=Decimal("928.00"),
+        ),
+        tributacao_municipal=
+        TributacaoMunicipalDanfse(
+            tipo_tributacao_issqn='1',
+            local_incidencia=
+            LocalIncidenciaIssqnDanfse(
+                municipio='Arapiraca',
+                local_incidencia_texto='Arapiraca',
+            ),
+            regime_especial_tributacao_issqn='0',
+            base_calculo_issqn=Decimal("928.00"),
+            aliquota_aplicada=Decimal("5.00"),
+            retencao_issqn='2',
+            valor_issqn_apurado=Decimal("46.40"),
+            operacao_sujeita_issqn=True,
+        ),
+        tributacao_federal=
+        TributacaoFederalDanfse(
+            valor_retencao_irrf=Decimal("13.92"),
+            valor_retencao_csll=Decimal("43.15"),
+            valor_pis_debito_apuracao_propria=Decimal("6.03"),
+            valor_cofins_debito_apuracao_propria=Decimal("27.84"),
+            tipo_retencao_pis_cofins='3',
+        ),
+        totais=
+        TotaisDanfse(
+            valor_operacao_servico=Decimal("928.00"),
+            total_retencoes_issqn_federais=Decimal("103.47"),
+            valor_liquido_nfse=Decimal("824.53"),
+        ),
+        informacoes_complementares=
+        InformacoesComplementaresDanfse(
+            chave_nfse_substituida='27003002239549075000161000000000000226030494932924',
+            totais_aproximados_tributos=
+            TotaisAproximadosTributosDanfse(
+                percentual_total_tributos_federais=Decimal("11.33"),
+                percentual_total_tributos_estaduais=Decimal("0.00"),
+                percentual_total_tributos_municipais=Decimal("5.00"),
+            ),
+        ),
+        status_visual=
+        StatusVisualDanfse(
+            is_homologacao=False,
+            is_cancelada=False,
+            is_substituida=False,
+            tomador_nao_identificado=False,
+            destinatario_nao_identificado=True,
+            destinatario_igual_tomador=False,
+            intermediario_nao_identificado=True,
+            operacao_nao_sujeita_issqn=False,
+        ),
+    )
+
+
+def expected_nota_gov_439_01107244000130() -> DanfseData:
+    return DanfseData(
+        cabecalho=
+        CabecalhoDanfse(
+            uf_emitente='BA',
+            ambiente_gerador='2',
+            tipo_ambiente='1',
+        ),
+        identificacao=
+        IdentificacaoNfseDanfse(
+            numero_nfse='439',
+            competencia_nfse=date.fromisoformat('2026-02-09'),
+            data_hora_emissao_nfse=datetime.fromisoformat('2026-02-09T16:55:52-03:00'),
+            numero_dps='2',
+            serie_dps='70000',
+            data_hora_emissao_dps=datetime.fromisoformat('2026-02-09T16:55:52-03:00'),
+            emitente_nfse='1',
+            situacao_nfse='107',
+        ),
+        prestador=
+        PrestadorDanfse(
+            documento=
+            DocumentoPessoaDanfse(
+                cnpj='01107244000130',
+            ),
+            telefone='75988589950',
+            email='reidaschaves.carimbos@gmail.com',
+            regime_tributario=
+            RegimeTributarioPrestadorDanfse(
+                simples_nacional_competencia='2',
+                regime_especial_tributacao='0',
+            ),
+        ),
+        tomador=
+        TomadorDanfse(
+            documento=
+            DocumentoPessoaDanfse(
+                cnpj='12517413000470',
+            ),
+            nome='SERVICO DE APOIO AS M E P EMPRESAS DE ALAGOAS-SEBRAE-AL',
+            endereco=
+            EnderecoDanfse(
+                codigo_municipio='2702405',
+                cep='57480000',
+                logradouro='PRESIDENTE CASTELO BRANCO',
+                numero='60',
+                complemento='BLOCO F LOJA 01 ANEXO SHOPPING DA VILA',
+                bairro='CENTRO',
+            ),
+        ),
+        servico=
+        ServicoPrestadoDanfse(
+            codigo_servico=
+            CodigoServicoDanfse(
+                codigo_tributacao_nacional='240101',
+                descricao_tributacao_nacional='Serviços de chaveiros, confecção de carimbos e congêneres.',
+            ),
+            local_prestacao=
+            LocalPrestacaoDanfse(
+                codigo_municipio='2924009',
+                municipio='Paulo Afonso',
+                local_prestacao_texto='Paulo Afonso',
+            ),
+            descricao_servico='01 CÓPIA DE CHAVE YALE',
+        ),
+        valores_servico=
+        ValoresServicoDanfse(
+            valor_servico=Decimal("13.00"),
+        ),
+        tributacao_municipal=
+        TributacaoMunicipalDanfse(
+            tipo_tributacao_issqn='1',
+            local_incidencia=
+            LocalIncidenciaIssqnDanfse(
+                municipio='Paulo Afonso',
+                local_incidencia_texto='Paulo Afonso',
+            ),
+            regime_especial_tributacao_issqn='0',
+            retencao_issqn='1',
+            operacao_sujeita_issqn=True,
+        ),
+        totais=
+        TotaisDanfse(
+            valor_operacao_servico=Decimal("13.00"),
+            valor_liquido_nfse=Decimal("13.00"),
+        ),
+        status_visual=
+        StatusVisualDanfse(
+            is_homologacao=False,
+            is_cancelada=False,
+            is_substituida=False,
+            tomador_nao_identificado=False,
+            destinatario_nao_identificado=True,
+            destinatario_igual_tomador=False,
+            intermediario_nao_identificado=True,
+            operacao_nao_sujeita_issqn=False,
+        ),
+    )
+
+
+def expected_nota_gov_4578_16819228000148() -> DanfseData:
+    return DanfseData(
+        cabecalho=
+        CabecalhoDanfse(
+            uf_emitente='AL',
+            ambiente_gerador='1',
+            tipo_ambiente='1',
+        ),
+        identificacao=
+        IdentificacaoNfseDanfse(
+            numero_nfse='4578',
+            competencia_nfse=date.fromisoformat('2026-03-03'),
+            data_hora_emissao_nfse=datetime.fromisoformat('2026-03-03T11:16:30-03:00'),
+            numero_dps='4578',
+            serie_dps='10000',
+            data_hora_emissao_dps=datetime.fromisoformat('2026-03-03T11:16:30-03:00'),
+            emitente_nfse='1',
+            situacao_nfse='100',
+        ),
+        prestador=
+        PrestadorDanfse(
+            documento=
+            DocumentoPessoaDanfse(
+                cnpj='16819228000148',
+            ),
+            inscricao_municipal='901186694',
+            regime_tributario=
+            RegimeTributarioPrestadorDanfse(
+                simples_nacional_competencia='1',
+                regime_especial_tributacao='0',
+            ),
+        ),
+        tomador=
+        TomadorDanfse(
+            documento=
+            DocumentoPessoaDanfse(
+                cnpj='12517413000470',
+            ),
+            nome='SERVICO DE APOIO AS M E P EMPRESAS DE ALAGOAS - SEBRAE AL',
+            endereco=
+            EnderecoDanfse(
+                codigo_municipio='2702405',
+                cep='57480000',
+                logradouro='Rua TODOS',
+                numero='310',
+                bairro='Delmiro Gouveia',
+            ),
+        ),
+        servico=
+        ServicoPrestadoDanfse(
+            codigo_servico=
+            CodigoServicoDanfse(
+                codigo_tributacao_nacional='171001',
+                codigo_tributacao_municipal='001',
+                descricao_tributacao_nacional='Planejamento, Organização E Administração De Feiras, Exposições, E Congêneres.',
+            ),
+            local_prestacao=
+            LocalPrestacaoDanfse(
+                codigo_municipio='2702405',
+                municipio='MACEIÃ¿',
+                local_prestacao_texto='MACEIÃ¿',
+            ),
+            descricao_servico='serviços de organização de feiras, congressos, exposições e\n                            festas',
+        ),
+        valores_servico=
+        ValoresServicoDanfse(
+            valor_servico=Decimal("1158.15"),
+        ),
+        tributacao_municipal=
+        TributacaoMunicipalDanfse(
+            tipo_tributacao_issqn='1',
+            local_incidencia=
+            LocalIncidenciaIssqnDanfse(
+                municipio='DELMIRO GOUVEIA',
+                local_incidencia_texto='DELMIRO GOUVEIA',
+            ),
+            regime_especial_tributacao_issqn='0',
+            base_calculo_issqn=Decimal("1158.15"),
+            aliquota_aplicada=Decimal("5.00"),
+            retencao_issqn='2',
+            valor_issqn_apurado=Decimal("57.91"),
+            operacao_sujeita_issqn=True,
+        ),
+        tributacao_federal=
+        TributacaoFederalDanfse(
+            valor_retencao_irrf=Decimal("17.37"),
+            valor_retencao_contribuicao_previdenciaria=Decimal("127.40"),
+            valor_retencao_csll=Decimal("11.58"),
+            valor_pis_debito_apuracao_propria=Decimal("7.53"),
+            valor_cofins_debito_apuracao_propria=Decimal("34.74"),
+            tipo_retencao_pis_cofins='1',
+        ),
+        totais=
+        TotaisDanfse(
+            valor_operacao_servico=Decimal("1158.15"),
+            total_retencoes_issqn_federais=Decimal("57.91"),
+            valor_liquido_nfse=Decimal("901.62"),
+        ),
+        informacoes_complementares=
+        InformacoesComplementaresDanfse(
+            totais_aproximados_tributos=
+            TotaisAproximadosTributosDanfse(
+                valor_total_tributos_federais=Decimal("0.00"),
+                valor_total_tributos_estaduais=Decimal("0.00"),
+                valor_total_tributos_municipais=Decimal("0.00"),
+            ),
+        ),
+        status_visual=
+        StatusVisualDanfse(
+            is_homologacao=False,
+            is_cancelada=False,
+            is_substituida=False,
+            tomador_nao_identificado=False,
+            destinatario_nao_identificado=True,
+            destinatario_igual_tomador=False,
+            intermediario_nao_identificado=True,
+            operacao_nao_sujeita_issqn=False,
+        ),
+    )
+
+
+def expected_nota_gov_4_39549075000161() -> DanfseData:
+    return DanfseData(
+        cabecalho=
+        CabecalhoDanfse(
+            uf_emitente='AL',
+            ambiente_gerador='2',
+            tipo_ambiente='1',
+        ),
+        identificacao=
+        IdentificacaoNfseDanfse(
+            numero_nfse='4',
+            competencia_nfse=date.fromisoformat('2026-03-09'),
+            data_hora_emissao_nfse=datetime.fromisoformat('2026-03-09T12:40:20-03:00'),
+            numero_dps='4',
+            serie_dps='70000',
+            data_hora_emissao_dps=datetime.fromisoformat('2026-03-09T12:40:20-03:00'),
+            emitente_nfse='1',
+            situacao_nfse='100',
+        ),
+        prestador=
+        PrestadorDanfse(
+            documento=
+            DocumentoPessoaDanfse(
+                cnpj='39549075000161',
+            ),
+            inscricao_municipal='163233',
+            telefone='00000000000',
+            email='julianlemos.financeiro@gmail.com',
+            regime_tributario=
+            RegimeTributarioPrestadorDanfse(
+                simples_nacional_competencia='1',
+                regime_especial_tributacao='0',
+            ),
+        ),
+        tomador=
+        TomadorDanfse(
+            documento=
+            DocumentoPessoaDanfse(
+                cnpj='12517413000208',
+            ),
+            inscricao_municipal='30210',
+            nome='SERVICO DE APOIO AS M E P EMPRESAS DE ALAGOAS-SEBRAE-AL',
+            endereco=
+            EnderecoDanfse(
+                codigo_municipio='2700300',
+                cep='57300100',
+                logradouro='ENGENHEIRO GORDILHO DE CASTRO',
+                numero='80',
+                bairro='CENTRO',
+            ),
+            email='verdiana.lopes@al.sebrae.com.br',
+        ),
+        servico=
+        ServicoPrestadoDanfse(
+            codigo_servico=
+            CodigoServicoDanfse(
+                codigo_tributacao_nacional='172001',
+                descricao_tributacao_nacional='Consultoria e assessoria econômica ou financeira.',
+                codigo_nbs='114011200',
+            ),
+            local_prestacao=
+            LocalPrestacaoDanfse(
+                codigo_municipio='2700300',
+                municipio='Arapiraca',
+                local_prestacao_texto='Arapiraca',
+            ),
+            descricao_servico='Contrato 00189/26 AE 409212 Item 0001',
+        ),
+        valores_servico=
+        ValoresServicoDanfse(
+            valor_servico=Decimal("1160.00"),
+        ),
+        tributacao_municipal=
+        TributacaoMunicipalDanfse(
+            tipo_tributacao_issqn='1',
+            local_incidencia=
+            LocalIncidenciaIssqnDanfse(
+                municipio='Arapiraca',
+                local_incidencia_texto='Arapiraca',
+            ),
+            regime_especial_tributacao_issqn='0',
+            base_calculo_issqn=Decimal("1160.00"),
+            aliquota_aplicada=Decimal("5.00"),
+            retencao_issqn='2',
+            valor_issqn_apurado=Decimal("58.00"),
+            operacao_sujeita_issqn=True,
+        ),
+        tributacao_federal=
+        TributacaoFederalDanfse(
+            valor_retencao_irrf=Decimal("17.40"),
+            valor_retencao_csll=Decimal("53.94"),
+            valor_pis_debito_apuracao_propria=Decimal("7.54"),
+            valor_cofins_debito_apuracao_propria=Decimal("34.80"),
+            tipo_retencao_pis_cofins='3',
+        ),
+        totais=
+        TotaisDanfse(
+            valor_operacao_servico=Decimal("1160.00"),
+            total_retencoes_issqn_federais=Decimal("129.34"),
+            valor_liquido_nfse=Decimal("1030.66"),
+        ),
+        informacoes_complementares=
+        InformacoesComplementaresDanfse(
+            totais_aproximados_tributos=
+            TotaisAproximadosTributosDanfse(
+                percentual_total_tributos_federais=Decimal("11.33"),
+                percentual_total_tributos_estaduais=Decimal("0.00"),
+                percentual_total_tributos_municipais=Decimal("5.00"),
+            ),
+        ),
+        status_visual=
+        StatusVisualDanfse(
+            is_homologacao=False,
+            is_cancelada=False,
+            is_substituida=False,
+            tomador_nao_identificado=False,
+            destinatario_nao_identificado=True,
+            destinatario_igual_tomador=False,
+            intermediario_nao_identificado=True,
+            operacao_nao_sujeita_issqn=False,
+        ),
+    )
+
+
+EXPECTED_BY_FIXTURE: dict[str, DanfseData] = {
+    "tests/fixtures/gov/nota_gov_1_29154166000144.xml": expected_nota_gov_1_29154166000144(),
+    "tests/fixtures/gov/nota_gov_1_33762922000195.xml": expected_nota_gov_1_33762922000195(),
+    "tests/fixtures/gov/nota_gov_1_39549075000161.xml": expected_nota_gov_1_39549075000161(),
+    "tests/fixtures/gov/nota_gov_215_1750331400100.xml": expected_nota_gov_215_1750331400100(),
+    "tests/fixtures/gov/nota_gov_2600000000196_17086031000100.xml": expected_nota_gov_2600000000196_17086031000100(),
+    "tests/fixtures/gov/nota_gov_2600000000197_17086031000100.xml": expected_nota_gov_2600000000197_17086031000100(),
+    "tests/fixtures/gov/nota_gov_2_39549075000161.xml": expected_nota_gov_2_39549075000161(),
+    "tests/fixtures/gov/nota_gov_3_39549075000161.xml": expected_nota_gov_3_39549075000161(),
+    "tests/fixtures/gov/nota_gov_439_01107244000130.xml": expected_nota_gov_439_01107244000130(),
+    "tests/fixtures/gov/nota_gov_4578_16819228000148.xml": expected_nota_gov_4578_16819228000148(),
+    "tests/fixtures/gov/nota_gov_4_39549075000161.xml": expected_nota_gov_4_39549075000161(),
+}
