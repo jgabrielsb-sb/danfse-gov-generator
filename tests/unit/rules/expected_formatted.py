@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from danfse.rules.formatted_models import FormattedDanfse
+from danfse.rules.models.formatted import FormattedDanfse
 
 def expected_nota_gov_1_29154166000144() -> FormattedDanfse:
     return FormattedDanfse.model_validate({'cabecalho': {'ambiente_gerador': 'Sistema Nacional da NFS-e',

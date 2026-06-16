@@ -3,8 +3,8 @@ from __future__ import annotations
 from datetime import date
 
 from danfse.domain.models import DanfseData, StatusVisualDanfse
-from danfse.rules.field_specs import NT_LIMITS
-from danfse.rules.formatters import EMPTY_DISPLAY, display_or_dash
+from danfse.rules.catalog.field_specs import NT_LIMITS
+from danfse.rules.formatting.primitives import EMPTY_DISPLAY, display_or_dash
 
 MSG_TOMADOR_NAO_IDENTIFICADO = "Tomador do Serviço não identificado na NFS-e"
 MSG_DESTINATARIO_NAO_IDENTIFICADO = "Destinatário da operação não identificado na NFS-e"

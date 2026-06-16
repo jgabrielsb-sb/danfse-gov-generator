@@ -50,7 +50,7 @@ package-dir = { "" = "src" }
 where = ["src"]
 
 [tool.setuptools.package-data]
-"danfse.rules.data" = ["*.json"]
+"danfse.rules.catalog.data" = ["*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -10,8 +10,8 @@ from danfse.domain.models import DanfseData
 from danfse.exceptions import PdfRenderError
 from danfse.layout.constants import PAGE_HEIGHT, PAGE_WIDTH
 from danfse.layout.layout_engine import LayoutPlan
-from danfse.rules.descriptions import normalize_description
-from danfse.rules.formatters import (
+from danfse.rules.formatting.descriptions import normalize_description
+from danfse.rules.formatting.primitives import (
     format_date,
     format_datetime,
     format_document,

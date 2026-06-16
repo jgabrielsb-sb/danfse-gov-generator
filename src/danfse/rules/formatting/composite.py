@@ -12,8 +12,8 @@ from danfse.domain.models import (
     LocalPrestacaoDanfse,
     TotaisAproximadosTributosDanfse,
 )
-from danfse.rules.field_specs import NT_LIMITS, QR_CODE_BASE_URL
-from danfse.rules.formatters import (
+from danfse.rules.catalog.field_specs import NT_LIMITS, QR_CODE_BASE_URL
+from danfse.rules.formatting.primitives import (
     EMPTY_DISPLAY,
     display_or_dash,
     format_access_key,

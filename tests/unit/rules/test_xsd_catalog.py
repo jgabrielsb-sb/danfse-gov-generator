@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from danfse.rules.xsd_catalog import XsdSchemaCatalog
+from danfse.rules.catalog.xsd import XsdSchemaCatalog
 
 
 def test_catalog_loads_default(xsd_catalog: XsdSchemaCatalog) -> None:

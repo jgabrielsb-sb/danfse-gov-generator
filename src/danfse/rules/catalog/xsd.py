@@ -41,7 +41,7 @@ class XsdSchemaCatalog:
         path = Path(__file__).resolve().parent / "data" / "xsd_descriptions.json"
         if path.exists():
             return cls.from_path(path)
-        with resources.files("danfse.rules.data").joinpath("xsd_descriptions.json").open(
+        with resources.files("danfse.rules.catalog.data").joinpath("xsd_descriptions.json").open(
             encoding="utf-8",
         ) as fh:
             return cls(json.load(fh))

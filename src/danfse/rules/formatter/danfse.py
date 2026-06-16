@@ -8,7 +8,7 @@ from danfse.domain.models import (
     TributacaoIbsCbsDanfse,
     TributacaoMunicipalDanfse,
 )
-from danfse.rules.composite import (
+from danfse.rules.formatting.composite import (
     format_aliquotas_ibs,
     format_beneficio_municipal,
     format_cabecalho_municipio,
@@ -29,9 +29,10 @@ from danfse.rules.composite import (
     format_reducoes_aliquota_ibs,
     format_suspensao_exigibilidade,
 )
-from danfse.rules.descriptions import describe_field
-from danfse.rules.field_specs import NT_LIMITS
-from danfse.rules.formatted_models import (
+from danfse.rules.catalog.field_specs import NT_LIMITS
+from danfse.rules.catalog.xsd import XsdSchemaCatalog, get_default_catalog
+from danfse.rules.formatting.descriptions import describe_field
+from danfse.rules.models.formatted import (
     FormattedCabecalho,
     FormattedCanhoto,
     FormattedDanfse,
@@ -48,7 +49,7 @@ from danfse.rules.formatted_models import (
     FormattedTributacaoMunicipal,
     FormattedValoresServico,
 )
-from danfse.rules.formatters import (
+from danfse.rules.formatting.primitives import (
     display_or_dash,
     format_access_key,
     format_date,
@@ -58,7 +59,7 @@ from danfse.rules.formatters import (
     format_percent,
     truncate_with_ellipsis,
 )
-from danfse.rules.suppression import (
+from danfse.rules.formatting.suppression import (
     format_pis_cofins_retention_label,
     resolve_destinatario_bloco,
     resolve_homologacao_aviso,
@@ -69,7 +70,6 @@ from danfse.rules.suppression import (
     should_render_party_block,
     should_render_tributacao_municipal,
 )
-from danfse.rules.xsd_catalog import XsdSchemaCatalog, get_default_catalog
 
 
 class DanfseFormatter:

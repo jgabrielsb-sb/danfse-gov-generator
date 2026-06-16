@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import date
 
-from danfse.rules.suppression import (
+from danfse.rules.formatting.suppression import (
     MSG_OPERACAO_NAO_SUJEITA_ISSQN,
     MSG_TOMADOR_NAO_IDENTIFICADO,
     format_pis_cofins_retention_label,

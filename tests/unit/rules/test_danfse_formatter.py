@@ -6,8 +6,8 @@ import pytest
 
 from danfse.parser.mapper import map_to_domain
 from danfse.parser.xml_parser import parse_xml
-from danfse.rules.danfse_formatter import DanfseFormatter
-from danfse.rules.formatted_models import FormattedDanfse
+from danfse.rules.formatter.danfse import DanfseFormatter
+from danfse.rules.models.formatted import FormattedDanfse
 from tests.unit.rules.expected_formatted import EXPECTED_FORMATTED_BY_FIXTURE
 
 FORMAT_GOV_FIXTURE_CASES = [

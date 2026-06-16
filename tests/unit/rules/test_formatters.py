@@ -5,7 +5,7 @@ from decimal import Decimal
 
 import pytest
 
-from danfse.rules.formatters import (
+from danfse.rules.formatting.primitives import (
     EMPTY_DISPLAY,
     display_or_dash,
     format_access_key,
