@@ -51,6 +51,7 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 "danfse.rules.catalog.data" = ["*.json"]
+"danfse.renderers.assets" = ["*.png"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

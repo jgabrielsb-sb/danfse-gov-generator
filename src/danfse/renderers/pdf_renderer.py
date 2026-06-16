@@ -1,16 +1,34 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from io import BytesIO
 from pathlib import Path
 
+from reportlab.lib import colors
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas as rl_canvas
 
 from danfse.exceptions import PdfRenderError
 from danfse.layout.constants import PAGE_HEIGHT_PT, PAGE_WIDTH_PT
-from danfse.layout.models import DanfseLayoutPlan, LayoutElement
+from danfse.layout.models import DanfseLayoutPlan, LayoutElement, PositionedRect
+from danfse.renderers.assets import resolve_logo_path
+from danfse.renderers.pdf_text import fit_text, wrap_text
 from danfse.renderers.qrcode import QrCodePayload, build_qrcode_image
 from danfse.renderers.watermark import draw_watermark
+
+LABEL_FONT = "Helvetica"
+LABEL_SIZE = 5.5
+VALUE_FONT = "Helvetica-Bold"
+VALUE_SIZE = 7.0
+TITLE_FONT = "Helvetica-Bold"
+TITLE_SIZE = 7.0
+FIXED_FONT = "Helvetica"
+FIXED_SIZE = 6.0
+CHAVE_FONT = "Courier-Bold"
+CHAVE_SIZE = 8.0
+CELL_PADDING = 2.5
+SHADE_COLOR = colors.HexColor("#E6E6E6")
+LINE_COLOR = colors.black
 
 
 @dataclass(frozen=True)
@@ -28,6 +46,7 @@ def render_pdf(
     options = options or PdfRenderOptions()
     out = Path(output_path)
     out.parent.mkdir(parents=True, exist_ok=True)
+    logo_path = resolve_logo_path(options.logo_path)
 
     try:
         pdf = rl_canvas.Canvas(str(out), pagesize=(PAGE_WIDTH_PT, PAGE_HEIGHT_PT))
@@ -36,12 +55,14 @@ def render_pdf(
         _draw_page_border(pdf, plan)
         if plan.homologacao_aviso:
             _draw_homologacao_banner(pdf, plan.homologacao_aviso)
+
         for block in plan.blocks:
             if not block.visible:
                 continue
             _draw_block_border(pdf, block.rect, plan.page.inner_line_width_pt)
             for element in block.elements:
-                _draw_element(pdf, element, logo_path=options.logo_path)
+                _draw_element(pdf, element, logo_path=logo_path, line_width=plan.page.inner_line_width_pt)
+
         pdf.showPage()
         pdf.save()
     except Exception as exc:
@@ -50,21 +71,29 @@ def render_pdf(
 
 def _draw_page_border(pdf: rl_canvas.Canvas, plan: DanfseLayoutPlan) -> None:
     rect = plan.page_rect
+    pdf.setStrokeColor(LINE_COLOR)
     pdf.setLineWidth(plan.page.border_width_pt)
     pdf.rect(rect.x_pt, rect.y_pt, rect.width_pt, rect.height_pt, stroke=1, fill=0)
 
 
-def _draw_block_border(pdf: rl_canvas.Canvas, rect, line_width: float) -> None:
+def _draw_block_border(pdf: rl_canvas.Canvas, rect: PositionedRect, line_width: float) -> None:
+    pdf.setStrokeColor(LINE_COLOR)
+    pdf.setLineWidth(line_width)
+    pdf.rect(rect.x_pt, rect.y_pt, rect.width_pt, rect.height_pt, stroke=1, fill=0)
+
+
+def _draw_cell_border(pdf: rl_canvas.Canvas, rect: PositionedRect, line_width: float) -> None:
+    pdf.setStrokeColor(LINE_COLOR)
     pdf.setLineWidth(line_width)
     pdf.rect(rect.x_pt, rect.y_pt, rect.width_pt, rect.height_pt, stroke=1, fill=0)
 
 
 def _draw_homologacao_banner(pdf: rl_canvas.Canvas, text: str) -> None:
     pdf.saveState()
-    pdf.setFillColorRGB(1, 0.9, 0.9)
+    pdf.setFillColor(colors.HexColor("#FFE6E6"))
     pdf.rect(36, PAGE_HEIGHT_PT - 72, PAGE_WIDTH_PT - 72, 24, stroke=0, fill=1)
-    pdf.setFillColorRGB(0.6, 0, 0)
-    pdf.setFont("Helvetica-Bold", 8)
+    pdf.setFillColor(colors.HexColor("#990000"))
+    pdf.setFont(TITLE_FONT, 8)
     pdf.drawCentredString(PAGE_WIDTH_PT / 2, PAGE_HEIGHT_PT - 64, text)
     pdf.restoreState()
 
@@ -74,24 +103,19 @@ def _draw_element(
     element: LayoutElement,
     *,
     logo_path: str | Path | None,
+    line_width: float,
 ) -> None:
     if element.shaded:
         pdf.saveState()
-        pdf.setFillColorRGB(0.92, 0.92, 0.92)
+        pdf.setFillColor(SHADE_COLOR)
         pdf.rect(element.rect.x_pt, element.rect.y_pt, element.rect.width_pt, element.rect.height_pt, fill=1, stroke=0)
         pdf.restoreState()
 
+    if element.kind != "image":
+        _draw_cell_border(pdf, element.rect, line_width)
+
     if element.kind == "image":
-        if logo_path:
-            pdf.drawImage(
-                ImageReader(str(logo_path)),
-                element.rect.x_pt,
-                element.rect.y_pt,
-                element.rect.width_pt,
-                element.rect.height_pt,
-                preserveAspectRatio=True,
-                mask="auto",
-            )
+        _draw_logo(pdf, element, logo_path)
         return
 
     if element.kind == "qrcode":
@@ -106,73 +130,152 @@ def _draw_element(
         _draw_fixed_text(pdf, element)
         return
 
+    if element.key == "identificacao.chave_acesso":
+        _draw_chave_acesso(pdf, element)
+        return
+
     _draw_labeled_value(pdf, element)
 
 
+def _inner_width(rect: PositionedRect) -> float:
+    return max(4.0, rect.width_pt - (2 * CELL_PADDING))
+
+
+def _draw_logo(
+    pdf: rl_canvas.Canvas,
+    element: LayoutElement,
+    logo_path: str | Path | None,
+) -> None:
+    _draw_cell_border(pdf, element.rect, 0.5)
+
+    if logo_path:
+        pdf.drawImage(
+            ImageReader(str(logo_path)),
+            element.rect.x_pt + CELL_PADDING,
+            element.rect.y_pt + CELL_PADDING,
+            element.rect.width_pt - (2 * CELL_PADDING),
+            element.rect.height_pt - (2 * CELL_PADDING),
+            preserveAspectRatio=True,
+            anchor="sw",
+            mask="auto",
+        )
+        return
+
+    pdf.saveState()
+    pdf.setFillColor(colors.HexColor("#1B4F72"))
+    pdf.rect(element.rect.x_pt, element.rect.y_pt, element.rect.width_pt, element.rect.height_pt, fill=1, stroke=0)
+    pdf.setFillColor(colors.white)
+    pdf.setFont(TITLE_FONT, 11)
+    pdf.drawCentredString(
+        element.rect.x_pt + element.rect.width_pt / 2,
+        element.rect.y_pt + element.rect.height_pt / 2 - 4,
+        "NFS-e",
+    )
+    pdf.setFont(LABEL_FONT, 6)
+    pdf.drawCentredString(
+        element.rect.x_pt + element.rect.width_pt / 2,
+        element.rect.y_pt + element.rect.height_pt / 2 - 16,
+        "Nacional",
+    )
+    pdf.restoreState()
+
+
 def _draw_block_title(pdf: rl_canvas.Canvas, element: LayoutElement) -> None:
-    pdf.setFont("Helvetica-Bold", 7)
+    pdf.setFont(TITLE_FONT, TITLE_SIZE)
+    pdf.setFillColor(colors.black)
+    text = fit_text(element.value, TITLE_FONT, TITLE_SIZE, _inner_width(element.rect))
     pdf.drawString(
-        element.rect.x_pt + 2,
-        element.rect.y_pt + element.rect.height_pt - 9,
-        element.value,
+        element.rect.x_pt + CELL_PADDING,
+        element.rect.y_pt + element.rect.height_pt - TITLE_SIZE - CELL_PADDING,
+        text,
     )
 
 
 def _draw_fixed_text(pdf: rl_canvas.Canvas, element: LayoutElement) -> None:
-    lines = element.value.splitlines() or [""]
-    if element.multiline:
-        _draw_multiline(pdf, element, lines, font_name="Helvetica", font_size=6, start_y=None)
+    inner_w = _inner_width(element.rect)
+    if element.key == "cabecalho.titulo":
+        lines = element.value.splitlines() or [""]
+        leading = FIXED_SIZE + 2
+        start_y = element.rect.y_pt + (element.rect.height_pt + leading * len(lines)) / 2 - FIXED_SIZE
+        for index, line in enumerate(lines):
+            pdf.setFont(TITLE_FONT, 8 if index == 0 else FIXED_SIZE)
+            pdf.drawCentredString(
+                element.rect.x_pt + element.rect.width_pt / 2,
+                start_y - index * leading,
+                line,
+            )
         return
-    pdf.setFont("Helvetica", 6)
-    pdf.drawString(
-        element.rect.x_pt + 2,
-        element.rect.y_pt + element.rect.height_pt - 8,
-        lines[0],
+
+    lines = wrap_text(
+        element.value,
+        FIXED_FONT,
+        FIXED_SIZE,
+        inner_w,
+        max_lines=max(1, int(element.rect.height_pt // (FIXED_SIZE + 2))),
+    )
+    _draw_lines(
+        pdf,
+        element,
+        lines,
+        font_name=FIXED_FONT,
+        font_size=FIXED_SIZE,
+        start_y=element.rect.y_pt + element.rect.height_pt - FIXED_SIZE - CELL_PADDING,
+    )
+
+
+def _draw_chave_acesso(pdf: rl_canvas.Canvas, element: LayoutElement) -> None:
+    top_y = element.rect.y_pt + element.rect.height_pt
+    if element.label:
+        pdf.setFont(LABEL_FONT, LABEL_SIZE)
+        pdf.drawString(element.rect.x_pt + CELL_PADDING, top_y - LABEL_SIZE - 1, element.label)
+
+    pdf.setFont(CHAVE_FONT, CHAVE_SIZE)
+    chave = fit_text(element.value, CHAVE_FONT, CHAVE_SIZE, _inner_width(element.rect))
+    pdf.drawCentredString(
+        element.rect.x_pt + element.rect.width_pt / 2,
+        element.rect.y_pt + element.rect.height_pt / 2 - 2,
+        chave,
     )
 
 
 def _draw_labeled_value(pdf: rl_canvas.Canvas, element: LayoutElement) -> None:
     top_y = element.rect.y_pt + element.rect.height_pt
+    inner_w = _inner_width(element.rect)
+
     if element.label:
-        pdf.setFont("Helvetica", 5.5)
-        pdf.drawString(element.rect.x_pt + 2, top_y - 7, element.label)
-        value_top = top_y - 14
+        label = fit_text(element.label, LABEL_FONT, LABEL_SIZE, inner_w)
+        pdf.setFont(LABEL_FONT, LABEL_SIZE)
+        pdf.drawString(element.rect.x_pt + CELL_PADDING, top_y - LABEL_SIZE - 1, label)
+        value_y = top_y - LABEL_SIZE - VALUE_SIZE - 3
     else:
-        value_top = top_y - 8
+        value_y = top_y - VALUE_SIZE - CELL_PADDING
 
     value = element.value
-    if element.max_chars is not None and len(value) > element.max_chars:
-        value = value[: element.max_chars]
-
     if element.multiline:
-        _draw_multiline(
-            pdf,
-            element,
-            _wrap_text(value, element.max_chars),
-            font_name="Helvetica-Bold",
-            font_size=6.5,
-            start_y=value_top,
-        )
+        max_lines = max(1, int((value_y - element.rect.y_pt) // (VALUE_SIZE + 2)))
+        lines = wrap_text(value, VALUE_FONT, VALUE_SIZE, inner_w, max_lines=max_lines)
+        _draw_lines(pdf, element, lines, font_name=VALUE_FONT, font_size=VALUE_SIZE, start_y=value_y)
         return
 
-    pdf.setFont("Helvetica-Bold", 6.5)
-    pdf.drawString(element.rect.x_pt + 2, value_top - 7, value)
+    pdf.setFont(VALUE_FONT, VALUE_SIZE)
+    pdf.drawString(
+        element.rect.x_pt + CELL_PADDING,
+        value_y,
+        fit_text(value, VALUE_FONT, VALUE_SIZE, inner_w),
+    )
 
 
-def _draw_multiline(
+def _draw_lines(
     pdf: rl_canvas.Canvas,
     element: LayoutElement,
     lines: list[str],
     *,
     font_name: str,
     font_size: float,
-    start_y: float | None = None,
+    start_y: float,
 ) -> None:
     leading = font_size + 2
-    max_lines = max(1, int(element.rect.height_pt // leading))
-    lines = lines[:max_lines]
-    y = start_y if start_y is not None else element.rect.y_pt + element.rect.height_pt - 8
-    text_obj = pdf.beginText(element.rect.x_pt + 2, y)
+    text_obj = pdf.beginText(element.rect.x_pt + CELL_PADDING, start_y)
     text_obj.setFont(font_name, font_size)
     text_obj.setLeading(leading)
     for line in lines:
@@ -185,15 +288,18 @@ def _draw_qrcode(pdf: rl_canvas.Canvas, element: LayoutElement) -> None:
         return
     image = build_qrcode_image(QrCodePayload(url=element.value))
     if image is None:
-        pdf.setFont("Helvetica", 5)
+        pdf.setFont(LABEL_FONT, 5)
         pdf.drawString(
-            element.rect.x_pt,
+            element.rect.x_pt + CELL_PADDING,
             element.rect.y_pt + element.rect.height_pt / 2,
-            "QR indisponível",
+            "Instale extra danfse[qrcode]",
         )
         return
+    buffer = BytesIO()
+    image.save(buffer, format="PNG")
+    buffer.seek(0)
     pdf.drawImage(
-        ImageReader(image),
+        ImageReader(buffer),
         element.rect.x_pt,
         element.rect.y_pt,
         element.rect.width_pt,
@@ -201,23 +307,3 @@ def _draw_qrcode(pdf: rl_canvas.Canvas, element: LayoutElement) -> None:
         preserveAspectRatio=True,
         mask="auto",
     )
-
-
-def _wrap_text(text: str, max_chars: int | None) -> list[str]:
-    if not text:
-        return [""]
-    width = max_chars or 120
-    words = text.split()
-    lines: list[str] = []
-    current: list[str] = []
-    for word in words:
-        candidate = " ".join(current + [word]).strip()
-        if len(candidate) <= width:
-            current.append(word)
-            continue
-        if current:
-            lines.append(" ".join(current))
-        current = [word]
-    if current:
-        lines.append(" ".join(current))
-    return lines or [""]

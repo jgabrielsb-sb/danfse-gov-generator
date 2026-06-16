@@ -55,7 +55,7 @@ def is_field_visible(spec: FieldSpec, data: FormattedDanfse, value: str) -> bool
         return True
 
     if spec.kind == "image":
-        return False
+        return spec.key == "assets.logo_nfse"
 
     block = spec.block
 

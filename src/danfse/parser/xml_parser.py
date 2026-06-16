@@ -71,11 +71,17 @@ class XmlNavigator:
     def attr(self, name: str) -> str | None:
         if self._node is None:
             return None
-        value = self._node.attrib.get(name)
-        if value is None:
-            return None
-        value = value.strip()
-        return value or None
+        # Atributos XML podem variar em capitalização (ex.: Id vs id).
+        candidates = {name, name.lower(), name.upper()}
+        if len(name) > 0:
+            candidates.add(name[0].upper() + name[1:])
+        for candidate in candidates:
+            value = self._node.attrib.get(candidate)
+            if value is not None:
+                value = value.strip()
+                if value:
+                    return value
+        return None
 
 
 def parse_xml(source: bytes | str | Path) -> XmlDocument:

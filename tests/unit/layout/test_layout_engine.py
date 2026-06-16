@@ -43,8 +43,8 @@ def test_optional_tributacao_federal_block_hidden(formatted_gov_1) -> None:
     plan = build_layout_plan(formatted_gov_1)
     federal = next(block for block in plan.blocks if block.key == "tributacao_federal")
 
-    assert federal.visible is False
-    assert federal.elements == ()
+    assert federal.visible is True
+    assert any(element.key.startswith("tributacao_federal.") for element in federal.elements)
 
 
 def test_field_positions_use_pdf_coordinates(formatted_gov_1) -> None:
@@ -78,3 +78,30 @@ def test_resolve_field_value_maps_servico_fields() -> None:
 
     assert resolve_field_value("servico.codigo_nbs", formatted) == "114021100"
     assert "170101" in resolve_field_value("servico.codigo_tributacao_nacional_municipal", formatted)
+
+
+def _rects_overlap_vertically(a, b, *, epsilon: float = 0.5) -> bool:
+    a_bottom = a.y_pt
+    a_top = a.y_pt + a.height_pt
+    b_bottom = b.y_pt
+    b_top = b.y_pt + b.height_pt
+    return a_bottom < b_top - epsilon and a_top > b_bottom + epsilon
+
+
+def test_servico_does_not_overlap_tributacao_municipal() -> None:
+    xml_path = Path("31062002255548926000108000000000000826069247812850.xml")
+    if not xml_path.exists():
+        pytest.skip("fixture XML not available")
+
+    formatted = DanfseFormatter().format(map_to_domain(parse_xml(xml_path)))
+    plan = build_layout_plan(formatted)
+
+    servico = next(block for block in plan.blocks if block.key == "servico")
+    tributacao = next(block for block in plan.blocks if block.key == "tributacao_municipal")
+
+    trib_top = tributacao.rect.y_pt + tributacao.rect.height_pt
+    assert servico.rect.y_pt >= trib_top - 0.5
+
+    for servico_element in servico.elements:
+        for trib_element in tributacao.elements:
+            assert not _rects_overlap_vertically(servico_element.rect, trib_element.rect)

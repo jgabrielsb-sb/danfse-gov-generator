@@ -30,7 +30,7 @@ def generate_danfse_pdf(xml_input: str | Path, pdf_output: str | Path, *, waterm
     )
 
 if __name__ == "__main__":
-    xml_path = Path("31062002255548926000108000000000000826069247812850.xml")
-    output_path = Path("31062002255548926000108000000000000826069247812850.pdf")
+    xml_path = Path("tests/fixtures/gov/nota_gov_1_29154166000144.xml")
+    output_path = Path("tests/fixtures/gov/nota_gov_1_29154166000144.pdf")
     generate_danfse_pdf(xml_path, output_path)
 

@@ -24,8 +24,11 @@ src/danfse/layout/visibility.py
 src/danfse/parser/mapper.py
 src/danfse/parser/xml_parser.py
 src/danfse/renderers/pdf_renderer.py
+src/danfse/renderers/pdf_text.py
 src/danfse/renderers/qrcode.py
 src/danfse/renderers/watermark.py
+src/danfse/renderers/assets/__init__.py
+src/danfse/renderers/assets/logo-nfs-e-horizontal.png
 src/danfse/rules/__init__.py
 src/danfse/rules/catalog/__init__.py
 src/danfse/rules/catalog/field_specs.py

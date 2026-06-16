@@ -102,7 +102,7 @@ class DanfseMapper:
         identificacao = self._map_identificacao(nfse, dps)
         cabecalho = self._map_cabecalho(nfse, dps)
 
-        prestador = self._map_prestador(XmlNavigator(prest_node))
+        prestador = self._map_prestador(XmlNavigator(prest_node), nfse.at("emit"), nfse)
 
         tomador = self._map_optional_person(dps.at("toma").node, TomadorDanfse)
 
@@ -183,7 +183,7 @@ class DanfseMapper:
 
         cabecalho = CabecalhoDanfse(
             municipio_emitente=(
-                ender_nac.text("xLocEmi")
+                nfse.text("xLocEmi")
                 or ender_nac.text("xMun")
                 or ender_nac.text("xCidade")
             ),
@@ -199,7 +199,7 @@ class DanfseMapper:
         nfse: XmlNavigator,
         dps: XmlNavigator,
     ) -> IdentificacaoNfseDanfse:
-        access_key = nfse.attr("id") or nfse.text("id")
+        access_key = nfse.attr("Id") or nfse.attr("id")
 
         return IdentificacaoNfseDanfse(
             chave_acesso=self._normalize_access_key(access_key),
@@ -214,7 +214,12 @@ class DanfseMapper:
             finalidade_nfse=dps.find("IBSCBS", "finNFSe").value(),
         )
 
-    def _map_prestador(self, prest: XmlNavigator) -> PrestadorDanfse:
+    def _map_prestador(
+        self,
+        prest: XmlNavigator,
+        emit: XmlNavigator,
+        nfse: XmlNavigator,
+    ) -> PrestadorDanfse:
         base = self._map_pessoa(prest, PrestadorDanfse)
 
         reg_trib = prest.at("regTrib")
@@ -224,11 +229,53 @@ class DanfseMapper:
             regime_especial_tributacao=reg_trib.text("regEspTrib"),
         )
 
-        return base.model_copy(
+        prestador = base.model_copy(
             update={
                 "regime_tributario": self._none_if_empty(regime),
             },
         )
+        prestador = self._enrich_prestador_from_emit(prestador, emit, nfse)
+        return prestador
+
+    def _enrich_prestador_from_emit(
+        self,
+        prestador: PrestadorDanfse,
+        emit: XmlNavigator,
+        nfse: XmlNavigator,
+    ) -> PrestadorDanfse:
+        if emit.node is None:
+            return prestador
+
+        emit_pessoa = self._map_pessoa(emit, PrestadorDanfse)
+        updates: dict[str, Any] = {}
+
+        if not prestador.nome and emit_pessoa.nome:
+            updates["nome"] = emit_pessoa.nome
+        if not prestador.telefone and emit_pessoa.telefone:
+            updates["telefone"] = emit_pessoa.telefone
+        if not prestador.email and emit_pessoa.email:
+            updates["email"] = emit_pessoa.email
+        if not prestador.inscricao_municipal and emit_pessoa.inscricao_municipal:
+            updates["inscricao_municipal"] = emit_pessoa.inscricao_municipal
+        if prestador.documento is None and emit_pessoa.documento is not None:
+            updates["documento"] = emit_pessoa.documento
+        if prestador.endereco is None and emit_pessoa.endereco is not None:
+            updates["endereco"] = emit_pessoa.endereco
+
+        prestador = prestador.model_copy(update=updates) if updates else prestador
+
+        if prestador.endereco is not None and not prestador.endereco.municipio:
+            municipio = nfse.text("xLocEmi")
+            if municipio:
+                prestador = prestador.model_copy(
+                    update={
+                        "endereco": prestador.endereco.model_copy(
+                            update={"municipio": municipio},
+                        ),
+                    },
+                )
+
+        return prestador
 
     def _map_optional_person(
         self,
@@ -253,6 +300,8 @@ class DanfseMapper:
         )
 
         endereco = self._map_endereco(person.at("end"))
+        if endereco is None:
+            endereco = self._map_endereco(person.at("enderNac"))
 
         return model_cls(
             documento=self._none_if_empty(documento),
@@ -267,8 +316,14 @@ class DanfseMapper:
         if end.node is None:
             return None
 
-        end_nac = end.at("endNac")
-        end_ext = end.at("endExt")
+        if end.local_name == "enderNac":
+            end_nac = end
+            end_ext = XmlNavigator(None)
+            outer = end
+        else:
+            end_nac = end.at("endNac")
+            end_ext = end.at("endExt")
+            outer = end
 
         endereco = EnderecoDanfse(
             codigo_municipio=end_nac.text("cMun") or end_ext.text("cMun"),
@@ -281,10 +336,10 @@ class DanfseMapper:
             pais=end_ext.text("xPais") or end_ext.text("cPais"),
             cep=end_nac.text("CEP"),
             codigo_enderecamento_postal_exterior=end_ext.text("cEndPost"),
-            logradouro=end.text("xLgr"),
-            numero=end.text("nro"),
-            complemento=end.text("xCpl"),
-            bairro=end.text("xBairro"),
+            logradouro=outer.text("xLgr"),
+            numero=outer.text("nro"),
+            complemento=outer.text("xCpl"),
+            bairro=outer.text("xBairro"),
         )
 
         return self._none_if_empty(endereco)
@@ -411,9 +466,12 @@ class DanfseMapper:
 
     def _map_tributacao_federal(self, dps: XmlNavigator) -> TributacaoFederalDanfse | None:
         trib_fed = dps.at("valores", "trib", "tribFed")
+        if trib_fed.node is None:
+            return None
+
         piscofins = trib_fed.at("piscofins")
 
-        model = TributacaoFederalDanfse(
+        return TributacaoFederalDanfse(
             valor_retencao_irrf=self._decimal(trib_fed.text("vRetIRRF")),
             valor_retencao_contribuicao_previdenciaria=self._decimal(trib_fed.text("vRetCP")),
             valor_retencao_csll=self._decimal(trib_fed.text("vRetCSLL")),
@@ -421,8 +479,6 @@ class DanfseMapper:
             valor_cofins_debito_apuracao_propria=self._decimal(piscofins.text("vCofins")),
             tipo_retencao_pis_cofins=piscofins.text("tpRetPisCofins"),
         )
-
-        return self._none_if_empty(model)
 
     # ============================================================
     # IBS / CBS
