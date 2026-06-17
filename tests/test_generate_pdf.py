@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from danfse import generate_danfse_pdf
+from gerador_danfse import generate_danfse_pdf
 
 
 def test_generate_pdf_creates_file(tmp_path: Path) -> None:
