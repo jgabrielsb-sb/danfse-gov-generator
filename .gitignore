@@ -15,6 +15,7 @@ env/
 venv/
 .env
 venv/*
+.venv/
 
 data/
 data/organized_data/
