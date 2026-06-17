@@ -17,7 +17,7 @@ only-include = [
 
 [project]
 name = "gerador-danfse"
-version = "0.1.0"
+version = "1.0.0"
 description = "Generate DANFSe PDF (auxiliary NFS-e document) from Brazilian NFS-e XML."
 readme = "README.md"
 requires-python = ">=3.10"
