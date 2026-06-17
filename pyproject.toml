@@ -17,7 +17,7 @@ only-include = [
 
 [project]
 name = "gerador-danfse"
-version = "1.0.0"
+version = "1.0.1"
 description = "Generate DANFSe PDF (auxiliary NFS-e document) from Brazilian NFS-e XML."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -37,7 +37,7 @@ classifiers = [
 ]
 dependencies = [
   "lxml>=5.0.0",
-  "pydantic>=2.13.4",
+  "pydantic>=2.0.0",
   "reportlab>=4.0.0",
   "qrcode[pil]>=7.4.2", 
   "pillow>=10.0.0",
