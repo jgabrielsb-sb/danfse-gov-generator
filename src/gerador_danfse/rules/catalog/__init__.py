@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from danfse.rules.catalog.field_specs import (
+from gerador_danfse.rules.catalog.field_specs import (
     ENUM_OVERRIDES,
     FIELD_SPECS,
     NT_LIMITS,
     QR_CODE_BASE_URL,
     DanfseFieldSpec,
 )
-from danfse.rules.catalog.xsd import XsdRestrictions, XsdSchemaCatalog, get_default_catalog
+from gerador_danfse.rules.catalog.xsd import XsdRestrictions, XsdSchemaCatalog, get_default_catalog
 
 __all__ = [
     "DanfseFieldSpec",

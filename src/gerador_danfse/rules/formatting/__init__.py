@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from danfse.rules.formatting.composite import (
+from gerador_danfse.rules.formatting.composite import (
     format_aliquotas_ibs,
     format_beneficio_municipal,
     format_cabecalho_municipio,
@@ -23,12 +23,12 @@ from danfse.rules.formatting.composite import (
     format_totais_aproximados_tributos,
     join_parts,
 )
-from danfse.rules.formatting.descriptions import (
+from gerador_danfse.rules.formatting.descriptions import (
     describe_enum,
     describe_field,
     normalize_description,
 )
-from danfse.rules.formatting.primitives import (
+from gerador_danfse.rules.formatting.primitives import (
     EMPTY_DISPLAY,
     ELLIPSIS,
     display_or_dash,
@@ -49,7 +49,7 @@ from danfse.rules.formatting.primitives import (
     truncate,
     truncate_with_ellipsis,
 )
-from danfse.rules.formatting.suppression import (
+from gerador_danfse.rules.formatting.suppression import (
     MSG_DESTINATARIO_IGUAL_TOMADOR,
     MSG_DESTINATARIO_NAO_IDENTIFICADO,
     MSG_HOMOLOGACAO,

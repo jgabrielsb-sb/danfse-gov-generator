@@ -4,10 +4,10 @@ from pathlib import Path
 
 import pytest
 
-from danfse.parser.mapper import map_to_domain
-from danfse.parser.xml_parser import parse_xml
-from danfse.rules.formatter.danfse import DanfseFormatter
-from danfse.rules.models.formatted import FormattedDanfse
+from gerador_danfse.parser.mapper import map_to_domain
+from gerador_danfse.parser.xml_parser import parse_xml
+from gerador_danfse.rules.formatter.danfse import DanfseFormatter
+from gerador_danfse.rules.models.formatted import FormattedDanfse
 from tests.unit.rules.expected_formatted import EXPECTED_FORMATTED_BY_FIXTURE
 
 FORMAT_GOV_FIXTURE_CASES = [
@@ -36,7 +36,7 @@ def test_format_gov_fixture_matches_expected(
 
 
 def test_op_simp_nac_truncates_long_enum_to_37_chars() -> None:
-    from danfse.domain.models import (
+    from gerador_danfse.domain.models import (
         CabecalhoDanfse,
         DanfseData,
         DocumentoPessoaDanfse,

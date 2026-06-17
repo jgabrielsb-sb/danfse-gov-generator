@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from collections.abc import Callable
 
-from danfse.rules.formatting.primitives import EMPTY_DISPLAY
-from danfse.rules.models.formatted import FormattedDanfse
+from gerador_danfse.rules.formatting.primitives import EMPTY_DISPLAY
+from gerador_danfse.rules.models.formatted import FormattedDanfse
 
 ValueGetter = Callable[[FormattedDanfse], str | None]
 

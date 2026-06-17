@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from danfse.layout.layout_engine import build_layout_plan
-from danfse.layout.models import DanfseLayoutPlan, LayoutBlock, LayoutElement, PositionedRect
+from gerador_danfse.layout.layout_engine import build_layout_plan
+from gerador_danfse.layout.models import DanfseLayoutPlan, LayoutBlock, LayoutElement, PositionedRect
 
 __all__ = [
     "DanfseLayoutPlan",

@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from danfse.layout.specs import PageSpec, RenderKind
-from danfse.rules.models.formatted import FormattedDanfse
+from gerador_danfse.layout.specs import PageSpec, RenderKind
+from gerador_danfse.rules.models.formatted import FormattedDanfse
 
 
 @dataclass(frozen=True)

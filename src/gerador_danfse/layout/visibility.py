@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from danfse.layout.specs import FieldSpec
-from danfse.rules.formatting.primitives import EMPTY_DISPLAY
-from danfse.rules.models.formatted import FormattedDanfse
+from gerador_danfse.layout.specs import FieldSpec
+from gerador_danfse.rules.formatting.primitives import EMPTY_DISPLAY
+from gerador_danfse.rules.models.formatted import FormattedDanfse
 
 PARTY_BLOCKS = frozenset({"tomador", "destinatario", "intermediario"})
 MESSAGE_FIELD_SUFFIXES = (

@@ -1,5 +1,5 @@
 from __future__ import annotations
 
-from danfse.rules.formatter.danfse import DanfseFormatter
+from gerador_danfse.rules.formatter.danfse import DanfseFormatter
 
 __all__ = ["DanfseFormatter"]

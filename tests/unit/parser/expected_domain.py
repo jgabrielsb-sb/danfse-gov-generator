@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import date, datetime
 from decimal import Decimal
 
-from danfse.domain.models import (
+from gerador_danfse.domain.models import (
     BeneficioMunicipalDanfse,
     CabecalhoDanfse,
     CanhotoDanfse,

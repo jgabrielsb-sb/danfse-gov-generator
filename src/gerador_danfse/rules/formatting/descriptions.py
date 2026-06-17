@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from danfse.rules.catalog.field_specs import ENUM_OVERRIDES
-from danfse.rules.catalog.xsd import XsdSchemaCatalog, get_default_catalog
-from danfse.rules.formatting.primitives import display_or_dash, truncate_with_ellipsis
+from gerador_danfse.rules.catalog.field_specs import ENUM_OVERRIDES
+from gerador_danfse.rules.catalog.xsd import XsdSchemaCatalog, get_default_catalog
+from gerador_danfse.rules.formatting.primitives import display_or_dash, truncate_with_ellipsis
 
 
 def describe_enum(

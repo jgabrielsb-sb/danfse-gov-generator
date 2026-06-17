@@ -9,7 +9,7 @@ from typing import Any
 from lxml import etree
 from pydantic import BaseModel
 
-from danfse.domain.models import (
+from gerador_danfse.domain.models import (
     BeneficioMunicipalDanfse,
     CabecalhoDanfse,
     CanhotoDanfse,
@@ -48,7 +48,7 @@ from danfse.domain.models import (
     TributacaoMunicipalDanfse,
     ValoresServicoDanfse,
 )
-from danfse.parser.xml_parser import DanfseParserError, XmlDocument, XmlNavigator
+from gerador_danfse.parser.xml_parser import DanfseParserError, XmlDocument, XmlNavigator
 
 
 class MissingRequiredNodeError(DanfseParserError):
@@ -836,7 +836,7 @@ class DanfseXmlParser:
         self._mapper = DanfseMapper(self.config)
 
     def parse(self, source: bytes | str | Path) -> DanfseData:
-        from danfse.parser.xml_parser import parse_xml
+        from gerador_danfse.parser.xml_parser import parse_xml
 
         return self._mapper.map_to_domain(parse_xml(source))
 

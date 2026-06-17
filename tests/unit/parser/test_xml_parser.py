@@ -4,9 +4,9 @@ from pathlib import Path
 
 import pytest
 
-from danfse.domain.models import DanfseData
-from danfse.parser.mapper import map_to_domain
-from danfse.parser.xml_parser import parse_xml
+from gerador_danfse.domain.models import DanfseData
+from gerador_danfse.parser.mapper import map_to_domain
+from gerador_danfse.parser.xml_parser import parse_xml
 from tests.unit.parser.expected_domain import EXPECTED_BY_FIXTURE
 
 PARSE_GOV_FIXTURE_CASES = [

@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from danfse.layout.coordinates import cm_to_pt, top_left_cm_to_pdf_rect
-from danfse.layout.field_values import resolve_field_value
-from danfse.layout.models import DanfseLayoutPlan, LayoutBlock, LayoutElement, PositionedRect
-from danfse.layout.reflow import (
+from gerador_danfse.layout.coordinates import cm_to_pt, top_left_cm_to_pdf_rect
+from gerador_danfse.layout.field_values import resolve_field_value
+from gerador_danfse.layout.models import DanfseLayoutPlan, LayoutBlock, LayoutElement, PositionedRect
+from gerador_danfse.layout.reflow import (
     compute_block_y_shifts,
     field_height_cm,
     is_party_message_field,
@@ -11,9 +11,9 @@ from danfse.layout.reflow import (
     party_message_field_height_cm,
     party_message_field_y_top_cm,
 )
-from danfse.layout.specs import BLOCK_SPECS, FIELD_SPECS, PAGE_SPEC
-from danfse.layout.visibility import is_block_visible, is_field_visible, party_has_message
-from danfse.rules.models.formatted import FormattedDanfse
+from gerador_danfse.layout.specs import BLOCK_SPECS, FIELD_SPECS, PAGE_SPEC
+from gerador_danfse.layout.visibility import is_block_visible, is_field_visible, party_has_message
+from gerador_danfse.rules.models.formatted import FormattedDanfse
 
 
 def build_layout_plan(formatted: FormattedDanfse) -> DanfseLayoutPlan:

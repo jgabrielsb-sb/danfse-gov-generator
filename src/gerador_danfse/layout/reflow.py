@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import re
 
-from danfse.layout.specs import BLOCK_SPECS, FIELD_SPECS, FieldSpec
+from gerador_danfse.layout.specs import BLOCK_SPECS, FIELD_SPECS, FieldSpec
 
 # Alturas aproximadas alinhadas ao renderer (pt → cm).
 LINE_HEIGHT_CM = 0.32

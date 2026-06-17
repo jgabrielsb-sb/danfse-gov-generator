@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from danfse.layout.layout_engine import build_layout_plan
-from danfse.parser.mapper import map_to_domain
-from danfse.parser.xml_parser import parse_xml
-from danfse.renderers.assets import default_logo_path
-from danfse.rules.formatter.danfse import DanfseFormatter
+from gerador_danfse.layout.layout_engine import build_layout_plan
+from gerador_danfse.parser.mapper import map_to_domain
+from gerador_danfse.parser.xml_parser import parse_xml
+from gerador_danfse.renderers.assets import default_logo_path
+from gerador_danfse.rules.formatter.danfse import DanfseFormatter
 
 
 def test_build_layout_plan_includes_logo_element() -> None:

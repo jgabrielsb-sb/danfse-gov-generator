@@ -4,7 +4,7 @@ from datetime import date, datetime
 from decimal import Decimal
 from typing import Any
 
-from danfse.domain.models import DocumentoPessoaDanfse
+from gerador_danfse.domain.models import DocumentoPessoaDanfse
 
 EMPTY_DISPLAY = "-"
 ELLIPSIS = "..."

@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import date
 from decimal import Decimal
 
-from danfse.domain.models import (
+from gerador_danfse.domain.models import (
     CodigoServicoDanfse,
     EnderecoDanfse,
     ExclusoesReducoesBaseCalculoIbsCbsDanfse,
@@ -12,8 +12,8 @@ from danfse.domain.models import (
     LocalPrestacaoDanfse,
     TotaisAproximadosTributosDanfse,
 )
-from danfse.rules.catalog.field_specs import NT_LIMITS, QR_CODE_BASE_URL
-from danfse.rules.formatting.primitives import (
+from gerador_danfse.rules.catalog.field_specs import NT_LIMITS, QR_CODE_BASE_URL
+from gerador_danfse.rules.formatting.primitives import (
     EMPTY_DISPLAY,
     display_or_dash,
     format_access_key,

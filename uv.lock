@@ -288,42 +288,6 @@ toml = [
 ]
 
 [[package]]
-name = "danfse"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "lxml" },
-    { name = "pydantic" },
-    { name = "reportlab" },
-]
-
-[package.optional-dependencies]
-dev = [
-    { name = "mypy" },
-    { name = "pytest" },
-    { name = "pytest-cov" },
-    { name = "ruff" },
-]
-qrcode = [
-    { name = "pillow" },
-    { name = "qrcode", extra = ["pil"] },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "lxml", specifier = ">=5.0.0" },
-    { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.8.0" },
-    { name = "pillow", marker = "extra == 'qrcode'", specifier = ">=10.0.0" },
-    { name = "pydantic", specifier = ">=2.13.4" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0.0" },
-    { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=5.0.0" },
-    { name = "qrcode", extras = ["pil"], marker = "extra == 'qrcode'", specifier = ">=7.4.2" },
-    { name = "reportlab", specifier = ">=4.0.0" },
-    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.5.0" },
-]
-provides-extras = ["qrcode", "dev"]
-
-[[package]]
 name = "exceptiongroup"
 version = "1.3.1"
 source = { registry = "https://pypi.org/simple" }
@@ -334,6 +298,40 @@ sdist = { url = "https://files.pythonhosted.org/packages/50/79/66800aadf48771f6b
 wheels = [
     { url = "https://files.pythonhosted.org/packages/8a/0e/97c33bf5009bdbac74fd2beace167cab3f978feb69cc36f1ef79360d6c4e/exceptiongroup-1.3.1-py3-none-any.whl", hash = "sha256:a7a39a3bd276781e98394987d3a5701d0c4edffb633bb7a5144577f82c773598", size = 16740, upload-time = "2025-11-21T23:01:53.443Z" },
 ]
+
+[[package]]
+name = "gerador-danfse"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "lxml" },
+    { name = "pillow" },
+    { name = "pydantic" },
+    { name = "qrcode", extra = ["pil"] },
+    { name = "reportlab" },
+]
+
+[package.optional-dependencies]
+dev = [
+    { name = "mypy" },
+    { name = "pytest" },
+    { name = "pytest-cov" },
+    { name = "ruff" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "lxml", specifier = ">=5.0.0" },
+    { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.8.0" },
+    { name = "pillow", specifier = ">=10.0.0" },
+    { name = "pydantic", specifier = ">=2.13.4" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0.0" },
+    { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=5.0.0" },
+    { name = "qrcode", extras = ["pil"], specifier = ">=7.4.2" },
+    { name = "reportlab", specifier = ">=4.0.0" },
+    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.5.0" },
+]
+provides-extras = ["dev"]
 
 [[package]]
 name = "iniconfig"

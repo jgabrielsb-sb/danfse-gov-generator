@@ -8,13 +8,13 @@ from reportlab.lib import colors
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas as rl_canvas
 
-from danfse.exceptions import PdfRenderError
-from danfse.layout.constants import PAGE_HEIGHT_PT, PAGE_WIDTH_PT
-from danfse.layout.models import DanfseLayoutPlan, LayoutElement, PositionedRect
-from danfse.renderers.assets import resolve_logo_path
-from danfse.renderers.pdf_text import fit_text, wrap_text
-from danfse.renderers.qrcode import QrCodePayload, build_qrcode_image
-from danfse.renderers.watermark import draw_watermark
+from gerador_danfse.exceptions import PdfRenderError
+from gerador_danfse.layout.constants import PAGE_HEIGHT_PT, PAGE_WIDTH_PT
+from gerador_danfse.layout.models import DanfseLayoutPlan, LayoutElement, PositionedRect
+from gerador_danfse.renderers.assets import resolve_logo_path
+from gerador_danfse.renderers.pdf_text import fit_text, wrap_text
+from gerador_danfse.renderers.qrcode import QrCodePayload, build_qrcode_image
+from gerador_danfse.renderers.watermark import draw_watermark
 
 LABEL_FONT = "Helvetica"
 LABEL_SIZE = 5.5

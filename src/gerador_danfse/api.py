@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from danfse.exceptions import XmlParseError
-from danfse.layout.layout_engine import build_layout_plan
-from danfse.parser.mapper import map_to_domain
-from danfse.parser.xml_parser import parse_xml
-from danfse.renderers.pdf_renderer import PdfRenderOptions, render_pdf
-from danfse.rules.formatter.danfse import DanfseFormatter
+from gerador_danfse.exceptions import XmlParseError
+from gerador_danfse.layout.layout_engine import build_layout_plan
+from gerador_danfse.parser.mapper import map_to_domain
+from gerador_danfse.parser.xml_parser import parse_xml
+from gerador_danfse.renderers.pdf_renderer import PdfRenderOptions, render_pdf
+from gerador_danfse.rules.formatter.danfse import DanfseFormatter
 
 
 def generate_danfse_pdf(xml_input: str | Path, pdf_output: str | Path, *, watermark: str | None = None) -> None:

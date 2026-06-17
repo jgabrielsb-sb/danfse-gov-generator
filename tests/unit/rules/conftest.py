@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from danfse.rules.catalog.xsd import XsdSchemaCatalog
+from gerador_danfse.rules.catalog.xsd import XsdSchemaCatalog
 
 
 @pytest.fixture

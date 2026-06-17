@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import sys
 
-from danfse.api import generate_danfse_pdf
+from gerador_danfse.api import generate_danfse_pdf
 
 
 def build_parser() -> argparse.ArgumentParser:

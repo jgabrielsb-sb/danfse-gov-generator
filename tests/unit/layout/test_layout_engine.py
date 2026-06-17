@@ -4,11 +4,11 @@ from pathlib import Path
 
 import pytest
 
-from danfse.layout.field_values import resolve_field_value
-from danfse.layout.layout_engine import build_layout_plan
-from danfse.parser.mapper import map_to_domain
-from danfse.parser.xml_parser import parse_xml
-from danfse.rules.formatter.danfse import DanfseFormatter
+from gerador_danfse.layout.field_values import resolve_field_value
+from gerador_danfse.layout.layout_engine import build_layout_plan
+from gerador_danfse.parser.mapper import map_to_domain
+from gerador_danfse.parser.xml_parser import parse_xml
+from gerador_danfse.rules.formatter.danfse import DanfseFormatter
 from tests.unit.rules.expected_formatted import EXPECTED_FORMATTED_BY_FIXTURE
 
 
@@ -143,3 +143,29 @@ def test_party_message_is_rendered_below_block_title() -> None:
         message_top = message.rect.y_pt + message.rect.height_pt
         assert title.rect.y_pt >= message_top - 0.5
         assert message.value.endswith("na NFS-e")
+
+
+def test_tributacao_municipal_title_does_not_overlap_tipo_field() -> None:
+    xml_path = Path("31062002255548926000108000000000000826069247812850.xml")
+    if not xml_path.exists():
+        pytest.skip("fixture XML not available")
+
+    formatted = DanfseFormatter().format(map_to_domain(parse_xml(xml_path)))
+    plan = build_layout_plan(formatted)
+
+    title = next(
+        element
+        for block in plan.blocks
+        for element in block.elements
+        if element.key == "block.tributacao_municipal.title"
+    )
+    tipo = next(
+        element
+        for block in plan.blocks
+        for element in block.elements
+        if element.key == "tributacao_municipal.tipo_tributacao_issqn"
+    )
+
+    assert title.rect.x_pt < tipo.rect.x_pt
+    assert title.rect.x_pt + title.rect.width_pt <= tipo.rect.x_pt + 0.5
+    assert abs(title.rect.y_pt - tipo.rect.y_pt) < 0.5

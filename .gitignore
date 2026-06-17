@@ -48,3 +48,4 @@ logs.db
 
 database/
 tests/fixtures
+tests/generated

@@ -10,7 +10,7 @@ LOGO_FILENAME = "logo-nfs-e-horizontal.png"
 @lru_cache(maxsize=1)
 def default_logo_path() -> Path | None:
     """Retorna o caminho da logo NFS-e embutida no pacote, se disponível."""
-    package_files = resources.files("danfse.renderers.assets")
+    package_files = resources.files("gerador_danfse.renderers.assets")
     logo = package_files.joinpath(LOGO_FILENAME)
     if logo.is_file():
         with resources.as_file(logo) as path:

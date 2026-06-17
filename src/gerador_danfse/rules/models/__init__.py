@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from danfse.rules.models.formatted import (
+from gerador_danfse.rules.models.formatted import (
     FormattedBaseModel,
     FormattedCabecalho,
     FormattedCanhoto,

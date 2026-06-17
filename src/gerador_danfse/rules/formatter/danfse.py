@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from danfse.domain.models import (
+from gerador_danfse.domain.models import (
     DanfseData,
     PessoaDanfse,
     PrestadorDanfse,
@@ -8,7 +8,7 @@ from danfse.domain.models import (
     TributacaoIbsCbsDanfse,
     TributacaoMunicipalDanfse,
 )
-from danfse.rules.formatting.composite import (
+from gerador_danfse.rules.formatting.composite import (
     format_aliquotas_ibs,
     format_beneficio_municipal,
     format_cabecalho_municipio,
@@ -29,10 +29,10 @@ from danfse.rules.formatting.composite import (
     format_reducoes_aliquota_ibs,
     format_suspensao_exigibilidade,
 )
-from danfse.rules.catalog.field_specs import NT_LIMITS
-from danfse.rules.catalog.xsd import XsdSchemaCatalog, get_default_catalog
-from danfse.rules.formatting.descriptions import describe_field
-from danfse.rules.models.formatted import (
+from gerador_danfse.rules.catalog.field_specs import NT_LIMITS
+from gerador_danfse.rules.catalog.xsd import XsdSchemaCatalog, get_default_catalog
+from gerador_danfse.rules.formatting.descriptions import describe_field
+from gerador_danfse.rules.models.formatted import (
     FormattedCabecalho,
     FormattedCanhoto,
     FormattedDanfse,
@@ -49,7 +49,7 @@ from danfse.rules.models.formatted import (
     FormattedTributacaoMunicipal,
     FormattedValoresServico,
 )
-from danfse.rules.formatting.primitives import (
+from gerador_danfse.rules.formatting.primitives import (
     display_or_dash,
     format_access_key,
     format_date,
@@ -59,7 +59,7 @@ from danfse.rules.formatting.primitives import (
     format_percent,
     truncate_with_ellipsis,
 )
-from danfse.rules.formatting.suppression import (
+from gerador_danfse.rules.formatting.suppression import (
     format_pis_cofins_retention_label,
     resolve_destinatario_bloco,
     resolve_homologacao_aviso,
