@@ -1,4 +1,4 @@
-# danfse
+# gerador-danfse
 
 Python library to generate a **DANFSe** (Documento Auxiliar da NFS-e) **single-page A4 PDF**
 from a Brazilian NFS-e XML.
@@ -6,13 +6,13 @@ from a Brazilian NFS-e XML.
 ## Install
 
 ```bash
-pip install danfse
+pip install gerador-danfse
 ```
 
 ## Usage (library)
 
 ```python
-from danfse import generate_danfse_pdf
+from gerador_danfse import generate_danfse_pdf
 
 generate_danfse_pdf("invoice.xml", "danfse.pdf")
 ```
